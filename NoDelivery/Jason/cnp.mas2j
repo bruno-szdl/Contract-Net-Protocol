@@ -1,0 +1,20 @@
+/*
+    CNP
+    ---------------------------
+
+    Jason Project File
+
+    This file defines the initial state of the MAS
+
+    Jason 2.5.1
+    Mar�o 15, 2021 - 21:08:03
+*/
+
+MAS cnp {
+
+    infrastructure: Centralised
+	
+    agents: controller #1;
+            restaurant #50;
+            client #200;
+}
