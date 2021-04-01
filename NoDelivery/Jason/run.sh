@@ -11,6 +11,6 @@ if [ $# -eq 3 ]; then
 fi
 
 echo "nOrders($nOrders).\nnClients($nClients)." > settings.asl
-echo "MAS cnp {\n\tinfrastructure: Centralised\n\n\tagents:\n\t\controller;\n\t\trestaurant #$nRestaurants;\n\t\tclient #$nClients;\n}" > contracts.mas2j
+echo "MAS cnp {\n\tinfrastructure: Centralised\n\n\tagents:\n\t\tcontroller;\n\t\trestaurant #$nRestaurants;\n\t\tclient #$nClients;\n}" > cnp.mas2j
 
 jason cnp.mas2j
