@@ -26,7 +26,6 @@ public class Restaurant extends Agent {
     
     @Override
     protected void setup() {
-        // gets the argument
         Object[] args = getArguments();
         myNumber = Integer.valueOf(args[0].toString());
         myFood = new Foods();
@@ -35,7 +34,6 @@ public class Restaurant extends Agent {
         R = getRadius();
         System.out.println("[restaurant"+myNumber+"] Hello, I am restaurant and I serve " + myFood.getFood() + "\n\t\t. I am located in " + X + ", " + Y + ".\n\t\tMy delivery radius is " + R + "m.");                
 
-        // Register the restaurant service in the yellow pages
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
@@ -48,15 +46,12 @@ public class Restaurant extends Agent {
             fe.printStackTrace();
         }
 
-        // Add the behaviour for evaluating clients agents
         addBehaviour(new OfferRequestsServer());
 
-        // Add the behaviour for serving clients agents
         addBehaviour(new PurchaseOrdersServer());
     }
 
     protected void takeDown() {
-        // Printout a dismissal message
         System.out.println("[restaurant"+myNumber+"] terminating.");
     }
 
@@ -69,21 +64,13 @@ public class Restaurant extends Agent {
         Random rand = new Random();
         return (30 + (int)(30 * rand.nextFloat())); 
     }
-    /**
-       Inner class OfferRequestsServer.
-       This is the behaviour used by Restaurant agents to serve incoming requests 
-       for offer from Client agents.
-       If the requested function is the offered by this restaurant, agent replies 
-       with a PROPOSE message specifying the price. Otherwise a REFUSE message is
-       sent back.
-  */
+
     private class OfferRequestsServer extends CyclicBehaviour {
         public void action(){          
             MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
             ACLMessage msg = myAgent.receive(mt);
 
             if(msg != null){
-                // CFP Message received. Process it
                 String req = msg.getContent();
                 String[] splitArray = req.split("\\.");
                 String reqMsg = splitArray[0];
@@ -97,21 +84,22 @@ public class Restaurant extends Agent {
                         reply.setPerformative(ACLMessage.PROPOSE);
                         price = myFood.getPrice();
                         reply.setContent(String.valueOf(price));
+                        System.out.println("[restaurant"+myNumber+"] Proposing "+price+"$ for " + msg.getSender().getName());
                     } 
                     else if(reqMsg.equals("I would like to order a " + myFood.getFood() + "by rate")){
                         reply.setPerformative(ACLMessage.PROPOSE);
                         reply.setContent(String.valueOf(rate));
+                        System.out.println("[restaurant"+myNumber+"] Proposing "+price+"$ for " + msg.getSender().getName());
                     }
                     else{
-                        // The requested function not available for this restaurant.
                         reply.setPerformative(ACLMessage.REFUSE);
                         reply.setContent("not-myFood");
                     }
                 }
                 else {
-                    // The requested restaurant is NOT available.
                     reply.setPerformative(ACLMessage.REFUSE);
                     reply.setContent("Too far");
+                    System.out.println("[restaurant"+myNumber+"] Refusing "+ msg.getSender().getName()+ "cause he is too far");
                 }
                 myAgent.send(reply);
             } 
@@ -128,27 +116,16 @@ public class Restaurant extends Agent {
             ACLMessage msg = myAgent.receive(mt);
             
             if (msg != null) {
-                // ACCEPT_PROPOSAL Message received. Process it
                 String req = msg.getContent();
                 ACLMessage reply = msg.createReply();
-
-                //Verify if the required service is the Function of this Restaurant
-                //if(req.equals("I would like to order a " + myFood.getFood())){
                 reply.setPerformative(ACLMessage.INFORM);
                 reply.setContent("preparing");
-                    // Add the behaviour for agent working
                 jobs++;
                 money += price;
                 System.out.println("[restaurant"+myNumber+"] Preparing "+myFood.getFood()+" for " + msg.getSender().getName());
                 Random rand = new Random();
                 int newStar =(int)(5 * rand.nextFloat());
                 rate = (newStar + rate*(jobs+1))/(jobs+2);
-                //}
-                //else{
-                    // The requested action is not the Workers function
-                //reply.setPerformative(ACLMessage.FAILURE);
-                //reply.setContent("not-myFood");
-                //}
                 myAgent.send(reply);
             } else {
                 block();

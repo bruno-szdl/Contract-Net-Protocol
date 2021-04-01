@@ -23,7 +23,6 @@ public class Controller extends Agent {
         Object[] args = getArguments();
         cc = (ContainerController)args[0];
         
-        // Register the client service in the yellow pages
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
         ServiceDescription sdv = new ServiceDescription();
@@ -57,7 +56,6 @@ public class Controller extends Agent {
     
         MessageTemplate mt = MessageTemplate.MatchConversationId("END");
 
-        // create a simple behavior 
         addBehaviour(new OneShotBehaviour() {
             public void action() {
                 while(allOrdersPlaced < nClients){
@@ -68,7 +66,6 @@ public class Controller extends Agent {
                         System.out.println("[controller] sleep error");
                     }
 
-                    //Verify quantity of clients
                     try{
                         DFAgentDescription[] result = DFService.search(myAgent, template);  
                         nClients = result.length;                
@@ -86,13 +83,11 @@ public class Controller extends Agent {
                 }
 
                 try{
-                    // Thread.sleep(10000);
                     Thread.sleep(100);
                 } catch(Exception e){
                     System.out.println("[controller] sleep error");
                 }
                 
-                //All clients ended
                 System.out.println("\n------------------------------ CNP1 ------------------------------\n");
                 
                 for(int i = 0; i < Foods.nFoods(); i++){
@@ -115,11 +110,9 @@ public class Controller extends Agent {
                 
             }
         });
-        //doDelete();
     }
 
     protected void takeDown() {
-        // Printout a dismissal message
         System.out.println("[controller] terminating.");
     }
 }

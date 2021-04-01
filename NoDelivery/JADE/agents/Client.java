@@ -21,10 +21,9 @@ enum Steps{
     END
   }
 
-
 public class Client extends Agent {
     private int myNumber = -1;
-    private int nCNPs = 3;              //Define how many CNP will be started
+    private int nCNPs = 3;          
     private int CNPended = 0;
     private int nContracts = 0;
     public int X = 0;
@@ -58,9 +57,7 @@ public class Client extends Agent {
         addBehaviour(new OneShotBehaviour() {
             public void action() {
                 while(nContracts < nCNPs){
-                    //System.out.println("-> Client" + myNumber + ": \tNumber of contracts: " + nContracts);
       
-                    //Define which service will be required
                     Foods f = new Foods();
                     String wantToEat = f.getFood();    
                                         
@@ -85,19 +82,15 @@ public class Client extends Agent {
         return (int)((100) * rand.nextFloat()); 
     }
 
-    /**
-       Inner class RequestPerformer.
-       This is the behaviour used by Client agents to request Worker 
-       agents to do some action.
-     */
+
     private class RequestRestaurant extends Behaviour {  
-        private MessageTemplate mt;     // The template to receive replies
-        private AID chosenRestaurant;         // The agent who provides the best offer
-        private AID[] possibleRestaurants;     // Possible workers to be contracted
-        private String wantToEat;          //Required service
-        private int lowerPrice;          // The best offered price
-        private double higherRate;          // The best offered price
-        private int repliesCnt = 0;     // The counter of replies from seller agents
+        private MessageTemplate mt;     
+        private AID chosenRestaurant;
+        private AID[] possibleRestaurants;
+        private String wantToEat;
+        private int lowerPrice;
+        private double higherRate;
+        private int repliesCnt = 0;
         private Steps step = Steps.START;
         private int OrderId;
         private AID controller;
@@ -152,10 +145,9 @@ public class Client extends Agent {
                     cfp.setContent("I would like to order a " + wantToEat + "by rate." + X + "." + Y);
                 }
                 cfp.setConversationId("contract");
-                cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
+                cfp.setReplyWith("cfp" + System.currentTimeMillis());
                 myAgent.send(cfp);
                 System.out.println("[client"+myNumber+"][Order"+OrderId+"] Sending CFP...");
-                // Prepare the template to get proposals
                 mt = MessageTemplate.and(MessageTemplate.MatchConversationId("contract"),
                                         MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
                 step = Steps.OFFERS;
@@ -205,22 +197,16 @@ public class Client extends Agent {
                 break;
             
             case CONFIRMATION:      
-                // Receive the purchase order reply
                 reply = myAgent.receive(mt);
                 if (reply != null) {
-                    // Purchase order reply received
                     if (reply.getPerformative() == ACLMessage.INFORM) {
                         if (strategy == 0){
                             System.out.println("[client"+myNumber+"][Order"+OrderId+"] Successfully ordered a " + wantToEat + " from " + reply.getSender().getName() + "for " + lowerPrice + "$\n");
                         } else {
                             System.out.println("[client"+myNumber+"][Order"+OrderId+"] Successfully ordered a " + wantToEat + " from " + reply.getSender().getName() + "with " + higherRate + " Stars\n"); 
                         }
-                        // Contract successful. We can terminate
-                        //nContracts--;    
-                    } else if(reply.getPerformative() == ACLMessage.FAILURE){
-                        System.out.println("[client"+myNumber+"][Order"+OrderId+"] Attempt failed: required restaurant is already busy.");
                     }else {
-                        System.out.println("[client"+myNumber+"][Order"+OrderId+"] Not Inform, not Failure.");
+                        System.out.println("Failure");
                     }
                     step=Steps.END;
                 } else {
@@ -232,11 +218,9 @@ public class Client extends Agent {
 
         public boolean done() {
             if((step == Steps.START && this.notFound) || (step == Steps.ANSWER && chosenRestaurant == null)){
-                //End intention
                 try{
                     CNPended++;
                     if(CNPended == nCNPs){
-                        //System.out.println("SENDING END");
     
                         ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 
@@ -272,7 +256,6 @@ public class Client extends Agent {
                 try{
                     CNPended++;
                     if(CNPended == nCNPs){
-                        //System.out.println("SENDING END");
     
                         ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 
@@ -293,7 +276,7 @@ public class Client extends Agent {
                         msg.setConversationId("END");
                         myAgent.send(msg);
                     }
-                    myAgent.removeBehaviour(this);          //Deleting this behaviour (Contract done)  
+                    myAgent.removeBehaviour(this);
                 }catch(NullPointerException ex){
                     System.out.println("!!!!! Error removing intention !!!!!");
                 }

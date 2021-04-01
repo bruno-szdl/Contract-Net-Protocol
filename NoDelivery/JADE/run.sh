@@ -1,8 +1,8 @@
 #! /bin/bash
 
 nRestaurants=50
-nClients=20
-nCNPs=2
+nClients=200
+nCNPs=10
 
 if [ $# -eq 3 ]; then
     nRestaurants=$1
