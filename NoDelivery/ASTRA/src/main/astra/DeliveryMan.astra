@@ -1,0 +1,10 @@
+agent DeliveryMan {
+
+	module Console console;
+	
+	initial !init();
+
+	rule +!init() {
+		console.println("HI");
+	}
+}

@@ -1,0 +1,130 @@
+/* Client Class*/
+agent Client {
+
+	/* Modules*/
+	module Console console;
+	module System system;
+	module Math math;
+	module Prelude prelude;
+	module Debug debug;
+	
+	/* Types*/
+	types foodType {
+		formula food(int, string);
+		}
+	types nOrdersType {
+		formula nOrders(int);
+		}
+	types finishedOrdersType {
+		formula finishedOrders(int);
+		}
+	types placedOrdersType {
+		formula placedOrders(int);
+		}
+	types typesOfFoodType {
+		formula typesOfFood(int);
+		}
+	types locationType {
+		formula location(int, int);
+		}
+	types wantToEatType {
+		formula wantToEat(string);
+		}
+	types orderIdType {
+		formula orderId(string);
+		}
+	types nameType {
+		formula name(string);
+		}
+	types strategyType {
+		formula strategy(int);
+		}		
+	types restaurantsType {
+		formula restaurants(list);
+		}
+
+	/* Initial beliefs */
+	initial nOrders(3); 																	//number of orders (CNPs)
+	initial finishedOrders(0); 																//number of finished orders
+	initial placedOrders(0);																//number of placed orders
+	initial typesOfFood(10);													//number of different types of food																	//auxiliar counter
+	
+	// food(Id, Name)
+	initial food(0, "pizza");
+	initial food(1, "hamburger");
+	initial food(2, "burrito");
+	initial food(3, "pastel");
+	initial food(4, "pasta");
+	initial food(5, "sushi");
+	initial food(6, "seafood");
+	initial food(7, "hotdog");
+	initial food(8, "salad");
+	initial food(9, "sfiha");
+	
+	/* Initial goals */
+	initial !init();
+	initial !getLocation();
+	initial !getStrategy();
+	
+	rule +!init()
+		: nOrders(int N) &
+		typesOfFood(int T){
+			string Name = system.name();
+			+name(Name);
+			console.println("Hi, I am " + Name);
+			system.sleep(100);
+			list RestaurantsList = system.getAgentsOfType("Restaurant");
+			+restaurants(RestaurantsList);
+			console.println(RestaurantsList);
+			int X = 0;
+			while(X < N){
+				X = X + 1;
+				int R = math.randomInt()/225000000;
+				console.println("choosing food" + R);
+				!chooseFood(X, R);
+				system.sleep(10);
+				}
+			console.println("I have finished choosing food");
+			-typesOfFood(T);
+			X = 0;
+			while(X < T){
+				-food(X, string S);
+				X = X + 1;
+				}
+			debug.dumpBeliefs();
+
+		}
+		
+	 rule +!chooseFood(int X, int R) :
+	 	food(R, string F) &
+	 	name(string Name){
+	 		string OrderId = Name + ".Order_" + X + "." + F;
+	 		+orderId(OrderId);
+	 		console.println("I want to order some " + F);
+	 		!searchRestaurant(OrderId);
+	 	}
+	 								  
+		
+	rule +!getLocation(){
+		int X = math.randomInt()/100000000;
+		int Y = math.randomInt()/100000000;
+		+location(X, Y);
+	    console.println("I am located in ("+ X + ", "+ Y + ").");
+		}
+		
+	rule +!getStrategy(){
+		int S = math.randomInt()/1000000000;
+		console.println("Strategy "+S);
+		}
+
+	rule +!searchRestaurant(string OrderId) 
+		: restaurants(list RL){
+		int i = 0;
+		console.println("Searching restaurants for "+OrderId);
+         while (i < prelude.size(RL)) {
+	         send(cfp, prelude.valueAsString(RL, i), orderId(OrderId));
+	         console.println("Sending CFP for "+OrderId+" for "+prelude.valueAsString(RL, i));
+	         i = i + 1;
+         }
+	}
+}

@@ -1,0 +1,56 @@
+/* Client Class*/
+agent Main {
+
+	/* Modules*/
+	module Console console;
+	module System system;
+	
+	/* Types*/
+	types nClientsType {
+		formula nClients(int);
+		}
+	types nRestaurantsType {
+		formula nRestaurants(int);
+		}
+	types nDeliveryMenType {
+		formula nDeliveryMen(int);
+		}
+		
+	/* Initial beliefs */
+	initial nClients(1); 																	
+	initial nRestaurants(2); 																
+    initial nDeliveryMen(1);																
+	
+	/* Initial goals */
+	//initial !createYellowPages();
+	initial !createAgents();
+	
+	/* Plans */
+	
+	//creating deliverymen agents
+	rule +!createAgents() :
+		nDeliveryMen(int D) &
+		nRestaurants(int R) &
+		nClients(int C) {
+			int X = 1;
+			while (X <= D){
+				system.createAgent("delivery_man_"+X, "DeliveryMan");
+		    	console.println("Created delivery_man_"+X+" Agent");
+		    	X = X + 1;
+			}
+			X = 1;
+			while (X <= R){
+				system.createAgent("restaurant_"+X, "Restaurant");
+		    	console.println("Created restaurant_"+X+" Agent");
+		    	X = X + 1;
+			}
+			system.sleep(1000);
+			X = 1;
+			while (X <= C){
+				system.createAgent("client_"+X, "Client");
+		    	console.println("Created client_"+X+" Agent");
+		    	X = X + 1;
+		}
+	}
+
+}

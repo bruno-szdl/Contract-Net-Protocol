@@ -1,0 +1,100 @@
+agent Restaurant {
+
+	/* Modules*/
+	module Console console;
+	module System system;
+	module Math math;
+	
+	/* Types*/
+	types typesOfFoodType {
+		formula typesOfFood(int);
+		}
+	types foodType {
+		formula food(int, string, int, int);
+		}
+	types priceType {
+		formula price(int);
+		}
+	types starsType {
+		formula stars(double);
+		}
+	types thinkingType {
+		formula thinking(boolean);
+		}
+	types sellsType {
+		formula sells(int);
+		}
+	types searchingType {
+		formula searching(boolean);
+		}
+	types locationType {
+		formula location(int, int);
+		}
+	types serveType {
+		formula serve(string);
+		}
+	types nameType {
+		formula name(string);
+		}
+	types orderIdType {
+		formula orderId(string);
+		}
+
+	/* Initial beliefs */
+	initial stars(5);
+	initial sells(0); 																
+	initial thinking(false); 																
+	initial searching(false);																
+	initial typesOfFood(10);														
+	
+	// food(Id, Name)
+	initial food(0, "pizza", 20, 100);
+	initial food(1, "hamburger", 10, 50);
+	initial food(2, "burrito", 18, 50);
+	initial food(3, "pastel", 5, 35);
+	initial food(4, "pasta", 20, 140);
+	initial food(5, "sushi", 70, 200);
+	initial food(6, "seafood", 20, 120);
+	initial food(7, "hotdog", 8, 30);
+	initial food(8, "salad", 15, 40);
+	initial food(9, "sfiha", 20, 40);
+	
+	/* Initial goals */
+	initial !init();
+    initial !getLocation();
+	
+	/* Initial goals */
+	rule +!init() : typesOfFood(int T){
+		string Name = system.name();
+		+name(Name);
+		console.println("Hi, I am " + Name);
+		int R = math.randomInt()/225000000;
+		//console.println("choosing food" + R);
+		!chooseFood(R);
+		system.sleep(100);
+		-typesOfFood(T);
+		int X = 0;
+		while(X < T){
+			-food(X, string S, int I, int J);
+			X = X + 1;
+			}
+		}
+		
+	 rule +!chooseFood(int R) :
+	 	food(R, string F, int minPrice, int maxPrice) {
+	 		int Rand = math.randomInt()/225000000;
+	 		int P = (9*minPrice + (maxPrice - minPrice)*Rand)/90;
+	 		console.println("I serve " + F + " for " + P + "$.");
+	 		+price(P);
+	 		+serve(F);
+	 		}
+	 			
+	rule +!getLocation(){
+		int X = math.randomInt()/100000000;
+		int Y = math.randomInt()/100000000;
+		+location(X, Y);
+		console.println("I am located in ("+ X + ", "+ Y + ").");
+		}
+
+	rule @message(cfp, string sender, orderId(OrderId)) {
+}
