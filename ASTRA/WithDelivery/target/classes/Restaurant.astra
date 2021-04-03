@@ -1,0 +1,208 @@
+agent Restaurant {
+
+	/* Modules*/
+	module Functions func;
+	module Console console;
+	module System system;
+	module Math math;
+	module Df df;
+	module Check check;
+	
+	/* Types*/
+	types restaurantTypes {
+		formula typesOfFood(int);
+		formula food(int, string, int, int);
+		formula price(int);
+		formula rate(double);
+		formula thinking(boolean);
+		formula sells(int);
+		formula searching(boolean);
+		formula location(int, int);
+		formula radius(int);
+		formula serve(string);
+		formula name(string);
+		formula sendCFP(string, int, int);
+		formula sendPropose(string, int, double);
+		formula sendRefuse(string);
+		formula orderAdress(string, string, int, int, int);
+		formula sendRefuse(string, string);
+		formula offer_denied(string, int);
+		formula offer_accepted(string, int, int, int);
+		formula offer_deniedDelivery(string, int);
+		formula offer_acceptedDelivery(string, int);
+		formula tell(string);
+		formula needToDeliver(string, string, int, int);
+		formula delivery_man_count(string, int);
+		formula preparing(string);
+		formula proposal(string, string, int);
+		formula refusal(string, string);
+		formula sendProposeDelivery(string, int);
+		formula sendRefuseDelivery(string);
+		}
+
+	/* Initial beliefs */
+	initial sells(0); 																
+	initial thinking(false); 																
+	initial searching(false);																
+	initial typesOfFood(10);														
+	
+	// food(Id, Name)
+
+	initial food(0, "pizza", 20, 100);
+	initial food(1, "hamburger", 10, 50);
+	initial food(2, "burrito", 18, 50);
+	initial food(3, "pastel", 5, 35);
+	initial food(4, "pasta", 20, 140);
+	initial food(5, "sushi", 70, 200);
+	initial food(6, "seafood", 20, 120);
+	initial food(7, "hotdog", 8, 30);
+	initial food(8, "salad", 15, 40);
+	initial food(9, "sfiha", 20, 40);
+	
+	/* Initial goals */
+
+	initial !init();
+    initial !getLocation();
+	initial !getRate();
+	
+	/* Initial goals */
+	rule +!init() : typesOfFood(int T){
+		string Name = system.name();
+		+name(Name);
+		console.println("Hi, I am " + Name);
+		int R = math.randomInt()%10;
+		query(food(R, string F, int minPrice, int maxPrice));
+		df.register(F);
+		int P = (10*minPrice + (maxPrice - minPrice)*(math.randomInt()%10))/10;
+	 	console.println("I serve " + F + " for " + P + "$.");
+	 	+price(P);
+	 	+serve(F);
+		-typesOfFood(T);
+		int X = 0;
+		while(X < T){
+			-food(X, string S, int I, int J);
+			X = X + 1;
+			}
+		}
+	 			
+	rule +!getLocation(){
+		int X = math.randomInt()%100;
+		int Y = math.randomInt()%100;
+		int R = math.randomInt()%100;
+		int Radius = 80 - 60*R;
+		+location(X, Y);
+		+radius(Radius);
+		console.println("I am located in ("+ X + ", "+ Y + "). My delivery radius is "+Radius+"m.");
+		}
+
+	rule +!getRate(){
+		double S = 5.0;
+		+rate(S);
+		}
+
+//----------------------------------------------------------------------------------------
+
+	rule @message(cfp, string sender, sendCFP(string OrderId, int X, int Y)) {
+		query(location(int XR, int YR));
+		query(radius(int Rd));
+		query(price(int P));
+		query(rate(double S));
+		int distance = math.abs(XR - X) + math.abs(YR -Y);
+		if (distance < Rd){
+			int Total = distance/2 + P;
+			//console.println("Proposing to "+OrderId);
+			//system.sleep(math.randomInt()%10);
+			send(propose, sender, sendPropose(OrderId, Total, S));
+		} else{
+			//system.sleep(math.randomInt()%10);
+			send(refuse, sender, sendRefuse(OrderId));
+			}
+		}
+
+	rule @message(reject-proposal, string sender, offer_denied(string OrderId, int Total)) {
+		send(inform, sender, tell("ok"));
+	}
+
+	rule @message(accept-proposal, string sender, offer_accepted(string OrderId, int Total, int X, int Y)) {
+		//console.println("Preparing "+OrderId);
+		query(sells(int S));
+		-+sells(S+1);
+		send(inform, sender, preparing(OrderId));
+		+needToDeliver(OrderId, sender, X, Y);
+	}
+
+//----------------------------------------------------------------------------------------
+
+	rule +needToDeliver(string OrderId, string client, int Xclient, int Yclient) {
+			//system.sleep(math.randomInt()%100);
+			!callForDeliveryMen(OrderId);
+		}
+
+	rule +!callForDeliveryMen(string OrderId) {
+			while (proposal(OrderId, string sender, int Distance)){
+				-proposal(OrderId, sender, Distance);
+			}
+			while (refusal(OrderId, string sender2)){
+				-refusal(OrderId, sender2);
+			}
+			//console.println("Searching deliverymen for "+OrderId);
+			df.search("deliveryman", list LD);
+			+delivery_man_count(OrderId, list_count(LD));
+			//console.println(LR);
+			if (LD == []){
+				console.println("No deliveryman found for "+OrderId);
+				//system.sleep(math.randomInt()%100);
+				system.exit();
+			} else{
+			query(location(int X, int Y));
+			send(cfp, LD, sendCFP(OrderId, X, Y));
+			}
+		}
+
+	rule @message(propose, string sender, sendProposeDelivery(string OrderId, int Distance)) {
+		+proposal(OrderId, sender, Distance);
+		//console.println("Received proposal for "+OrderId+" from "+sender);
+		!call_done(OrderId);
+	}
+
+	rule @message(refuse, string sender, sendRefuseDelivery(string OrderId)) {
+		+refusal(OrderId, sender);
+		//console.println("Received refusal for "+OrderId+" from "+sender);
+		!call_done(OrderId);
+	}
+
+	rule +!call_done(string OrderId) 
+			:  delivery_man_count(OrderId, check.count(proposal(OrderId, string sender, int Distance))+check.count(refusal(OrderId, string sender2))) {
+		if (check.count(proposal(OrderId, sender, Distance)) < 1){
+			system.sleep(10);
+			console.println("No available delivery man, searching again...");
+			!callForDeliveryMen(OrderId);
+		} else{
+			console.println("Choosing delivery man...");
+			!chooseDeliveryMan(OrderId);
+		}
+	}
+
+	rule +!call_done(string OrderId) {}
+
+
+	rule +!chooseDeliveryMan(string OrderId) {
+		string chosen_deliveryman = "";
+		int distance = 9999;
+		foreach(proposal(OrderId, string sender, int D)){
+			if (D < distance) {
+				if (chosen_deliveryman ~= ""){
+					send(reject-proposal, chosen_deliveryman, offer_deniedDelivery(OrderId, D));
+					}
+				chosen_deliveryman = sender;
+				distance = D;
+			} else {
+				send(reject-proposal, sender, offer_deniedDelivery(OrderId, D));
+			}
+		}
+		//system.sleep(math.randomInt()%100);
+		send(accept-proposal, chosen_deliveryman, offer_acceptedDelivery(OrderId, distance));
+		//system.sleep(math.randomInt()%100);
+	}
+
+}
