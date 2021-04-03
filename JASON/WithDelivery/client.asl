@@ -58,7 +58,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 +!getLocation 
 	:  .random(XClient) &														//random X coordinate
 	   .random(YClient)															//random Y coordinate
-	<- .print("Hi, I am a client.\nI live in (", XClient*100, ", ", YClient*100, ").");				//
+	<- //.print("Hi, I am a client.\nI live in (", XClient*100, ", ", YClient*100, ").");				//
 		+location(XClient*100, YClient*100). 									//add belief location(X,Y)
 
 +!getSets

@@ -43,7 +43,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   N = math.floor(TOF*R) &													// 0 <= N <= 9
 	   food(N, F, Min, Max)														//get the food information
 	<- +myFoodType(F, Min, Max);												//add belief of the type of restaurant
-	   .print("I am a restaurant and I serve ", F,".");							//
+	   //.print("I am a restaurant and I serve ", F,".");							//
 	   .abolish(food(_,_,_,_));													//clear memory
 	   .wait(R*2000);
 	   .df_register(F);
@@ -64,15 +64,15 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   .random(R)																//given random R
 	<- +location(XRestaurant*100, YRestaurant*100);								//add belief of the location
 		DR = 60 - 50*R;															//calculate delivery radius
-	   +deliveryRadius(DR)														//add belief delivery radius
-	   .print("I am located in (", XRestaurant*100, ", ", YRestaurant*100, ")."). //
+	   +deliveryRadius(DR).														//add belief delivery radius
+	   //.print("I am located in (", XRestaurant*100, ", ", YRestaurant*100, ")."). //
 
 //Get rate
 +!getRate
 	:  .random(R) &																//given random R
 	   S = math.ceil(5*R)
-	<- +stars(S)
-	   .print("I have ", S, "stars."). //
+	<- +stars(S).
+	   //.print("I have ", S, "stars."). //
 
 			
 /* ----------------- Plans as participant ----------------- */

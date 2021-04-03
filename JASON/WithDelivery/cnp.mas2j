@@ -5,5 +5,5 @@ MAS cnp {
 		controller #1;
 		deliveryman #50;
 		restaurant #50;
-		client #100;
+		client #200;
 }
