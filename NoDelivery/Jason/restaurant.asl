@@ -64,7 +64,7 @@ food(9, sfiha, 20, 40).
 //Register as restaurant that sells some kind of food
 +!register
 	:  myFoodType(F,_,_)														//given food type
-	<- .wait(10);
+	<- //.wait(1);
 	   .df_register(F).															//register food type
 			
 /* ----------------- Plans as participant ----------------- */

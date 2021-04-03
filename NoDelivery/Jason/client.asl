@@ -2,7 +2,6 @@
 
 /* ----------------- Initial Beliefs ----------------- */
 
-placedOrders(0).																//number of placed orders
 typesOfFood(10). 																//number of different types of food
 count(0). 																		//auxiliar counter
 
@@ -31,7 +30,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 !init. 																			//add the goal chooseFood for each order
 !getLocation. 																	//get the client's house location
 !getStrategy. 																	//get the order strategy (price or stars)
-
+!checkPlacedOrders. 															//check if all orders were placed
 
 /* ----------------- Plans ----------------- */
 //add the goal chooseFood for each order
@@ -40,7 +39,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   nOrders(O) &																//number of orders
 	   C < O 																	//if counter is less than number of orders
 	<- -+count(C+1);				     										//update counter
-	   .wait(100);  															//wait to place another order
+	   .wait(1);  															//wait to place another order
 	   !chooseFood(C+1) |&| !init.												//choose food for order and repeat
 
 //finished choosing foods to order
@@ -78,7 +77,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 //checking all available restaurants for the type of food
 +!searchRestaurant(OrderId, F)
 	:  location(XClient,YClient)												//given location of the client
-	<- .wait(100); 																//wait for restaurants to register
+	<- .wait(1); 																//wait for restaurants to register
 	   .df_search(F ,LR); 														//search all restaurants that serve that kind of food
 	   //.print("Searching ",F," restaurants..."); 								//
 	   .send(LR, tell, order(OrderId, XClient, YClient)); 						//send order for all restaurants that serve that kind of food
@@ -97,7 +96,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	
 //choosing cheapest restaurant	
 +!chooseRestaurantByPrice(OrderId) 
-	:  .findall(offer(T, A), propose(OrderId, T, _,)[source(A)], L) &      //put all offers into a list
+	:  .findall(offer(T, A), propose(OrderId, T, _)[source(A)], L) &      //put all offers into a list
 	   L \== []																	//if the list is not empty
 	<- //.print("Prices for ", OrderId, " are ", L,"."); 						//
 	   .min(L, offer(WOf,WAg));													//find the cheapest restaurant
@@ -109,13 +108,12 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //no restaurant found
 +!chooseRestaurantByPrice(OrderId)												//if the list is empty, there is no restaurant that serves this kind of food nearby
-	:  placedOrders(PO)															//given the number of placed orders
     <- .print("No restaurant for ", OrderId," nearby."); 						//
 	   .abolish(refuse(OrderId)); 												//clear memory
 	   .abolish(propose(OrderId,_,_,_,_));										//clear memory
        -wantToEat(OrderId);														//clear memory	
 	   +noRestaurant(OrderId);													//add the belief that there is no resturant for this kind of food
-	   -+placedOrders(PO+1).													//update placed orders (the client did not find a restaurant, but you have to count it)
+	   +placedOrder(OrderId).														//update placed orders (the client did not find a restaurant, but you have to count it)
 	   
 //choosing best rated restaurant
 +!chooseRestaurantByStar(OrderId) 
@@ -131,17 +129,16 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //no restaurant found
 +!chooseRestaurantByStar(OrderId) 												//if the list is empty, there is no restaurant that serves this kind of food nearby
-	:  placedOrders(PO)															//given the number of placed orders
     <- .print("No restaurant for ", OrderId," nearby.");  						//
 	   .abolish(refuse(OrderId)); 												//clear memory
 	   .abolish(propose(OrderId,_,_,_,_));										//clear memory
        -wantToEat(OrderId);														//clear memory	
 	   +noRestaurant(OrderId);													//add the belief that there is no resturant for this kind of food
-	   -+placedOrders(PO+1).													//update placed orders (the client did not find a restaurant, but you have to count it)
+	   +placedOrder(OrderId).													//update placed orders (the client did not find a restaurant, but you have to count it)
 
 //confirm order to the chosen restaurant
 +!answerRestaurants(OrderId, [offer(_,WAg)|T], WAg) 
-	<- .wait(50);															    //wait to confirm order of the chosen restaurant
+	<- .wait(1);															    //wait to confirm order of the chosen restaurant
 	   .send(WAg, tell, confirm_order(OrderId));								//confirm order		
 	   //.print("[",WAg,"] waiting ",OrderId,".");								//
 	   +waiting(OrderId, WAg);													//add the belief (waiting order)
@@ -157,9 +154,8 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //restaurant has confirmed the order and it's preparing the food
 +inform_preparing(OrderId)[source(A)]
-	:   placedOrders(PO)														//given the number of placed orders
 	<- //.print("[",A,"] is preparing the Order: ", OrderId, ".");				//
-	   -+placedOrders(PO+1);													//update placed orders
+	   +placedOrder(OrderId);													//update placed orders
 	   !rate(OrderId, A).
 
 //restaurant has confirmed the cancellation of the order
@@ -176,10 +172,16 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   
 
 //all the orders have finished
-+placedOrders(PO)
++!checkPlacedOrders
 	:  nOrders(NO) &															//given number of orders
-	   PO = NO																	//if number of placed orders is equal to the number of orders
+	   .count(placedOrder(_), N) &
+	   N == NO	
 	<- .print(" ---------------------------- Placed all my orders ---------------------------- "); //
-		+allOrdersPlaced
-	   .wait(1);																//wait
-	   .send("controller", tell, allOrdersPlaced).										//tell controller all orders were placed
+		+allOrdersPlaced;
+	   //.wait(1);																//wait
+	   .send("controller", tell, allOrdersPlaced);										//tell controller all orders were placed
+	   .abolish(placedOrder(_)).
+
++!checkPlacedOrders
+	<- //.wait(1);
+	   !checkPlacedOrders.

@@ -30,7 +30,7 @@ allClientsWaiting(NC) :- .count(allOrdersPlaced[source(_)], NF) &								//all c
 //if not
 +!checkAllClientsWaiting 
 	: cnp1(false)
-	<- .wait(10);
+	<- //.wait(10);
 	   !checkAllClientsWaiting.
 	
 
