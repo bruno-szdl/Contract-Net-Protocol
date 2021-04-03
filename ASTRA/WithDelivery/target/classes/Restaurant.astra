@@ -38,6 +38,7 @@ agent Restaurant {
 		formula refusal(string, string);
 		formula sendProposeDelivery(string, int);
 		formula sendRefuseDelivery(string);
+		formula sendFailureDelivery(string);
 		}
 
 	/* Initial beliefs */
@@ -174,11 +175,11 @@ agent Restaurant {
 	rule +!call_done(string OrderId) 
 			:  delivery_man_count(OrderId, check.count(proposal(OrderId, string sender, int Distance))+check.count(refusal(OrderId, string sender2))) {
 		if (check.count(proposal(OrderId, sender, Distance)) < 1){
-			system.sleep(10);
-			console.println("No available delivery man, searching again...");
+			//system.sleep(10);
+			//console.println("No available delivery man, searching again...");
 			!callForDeliveryMen(OrderId);
 		} else{
-			console.println("Choosing delivery man...");
+			//console.println("Choosing delivery man...");
 			!chooseDeliveryMan(OrderId);
 		}
 	}
@@ -204,5 +205,10 @@ agent Restaurant {
 		send(accept-proposal, chosen_deliveryman, offer_acceptedDelivery(OrderId, distance));
 		//system.sleep(math.randomInt()%100);
 	}
+
+	rule @message(failure, string sender, sendFailureDelivery(string OrderId)){
+		!callForDeliveryMen(OrderId);
+	}
+
 
 }

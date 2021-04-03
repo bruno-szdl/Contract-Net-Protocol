@@ -236,9 +236,9 @@ public class Client extends ASTRAClass {
 						)
 					),
 					new ModuleCall("system",
-						"Client", new int[] {88,8,88,22},
+						"Client", new int[] {88,8,88,24},
 						new Predicate("sleep", new Term[] {
-							Primitive.newPrimitive(1)
+							Primitive.newPrimitive(100)
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -442,7 +442,7 @@ public class Client extends ASTRAClass {
 									})
 								),
 								new ModuleCall("system",
-									"Client", new int[] {109,16,109,49},
+									"Client", new int[] {109,16,109,48},
 									new Predicate("sleep", new Term[] {
 										Operator.newOperator('%',
 											new ModuleTerm("math", Type.INTEGER,
@@ -458,7 +458,7 @@ public class Client extends ASTRAClass {
 													}
 												}
 											),
-											Primitive.newPrimitive(100)
+											Primitive.newPrimitive(10)
 										)
 									}),
 									new DefaultModuleCallAdaptor() {
@@ -978,6 +978,26 @@ public class Client extends ASTRAClass {
 								)
 							}
 						)
+					),
+					new ModuleCall("console",
+						"Client", new int[] {192,8,192,52},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("Placed order for "),
+								new Variable(Type.STRING, "OrderId")
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("Client","console")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
 					),
 					new BeliefUpdate('+',
 						"Client", new int[] {194,8,195,5},

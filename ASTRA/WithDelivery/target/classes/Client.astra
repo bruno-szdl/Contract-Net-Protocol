@@ -85,7 +85,7 @@ agent Client {
 		}
 		!getLocation();
 		!getStrategy();
-		system.sleep(1);
+		system.sleep(100);
 		!placeOrders();
 	}
 	rule +!getLocation(){
@@ -106,7 +106,7 @@ agent Client {
 			while(wantToOrder(string OrderId, string F)){
 				-wantToOrder(OrderId, F);
 				//console.println("Starting cnp for "+OrderId);
-				system.sleep(math.randomInt()%100);
+				system.sleep(math.randomInt()%10);
 				!!cnp(OrderId, F, X, Y);
 			}
 		}
@@ -189,7 +189,7 @@ agent Client {
 		//console.println("Chosed "+ chosen_restaurant +" for "+OrderId);
 		send(accept-proposal, chosen_restaurant, offer_accepted(OrderId, price, X, Y));
 		}
-		//console.println("Placed order for "+OrderId);
+		console.println("Placed order for "+OrderId);
 		//system.sleep(math.randomInt()%100);
 		+placed(OrderId);
 	}

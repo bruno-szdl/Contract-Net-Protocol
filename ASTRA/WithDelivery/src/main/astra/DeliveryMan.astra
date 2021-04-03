@@ -45,15 +45,16 @@ agent DeliveryMan {
 		}
 
 	rule @message(cfp, string sender, sendCFP(string OrderId, int X, int Y)) {
-		system.sleep(math.randomInt()%10);
+		//system.sleep(math.randomInt()%10);
 		query(location(int XD, int YD));
 		query(working(boolean w));
 		if (w == true){
 			//system.sleep(math.randomInt()%10);
 			send(refuse, sender, sendRefuseDelivery(OrderId));
+			//console.println("Not available now to "+OrderId);
 		} else{
 			int distance = math.abs(XD - X) + math.abs(YD -Y);
-			console.println("Proposing to "+OrderId);
+			//console.println("Proposing to "+OrderId);
 			//system.sleep(math.randomInt()%10);
 			send(propose, sender, sendProposeDelivery(OrderId, distance));}
 		}
@@ -71,13 +72,13 @@ agent DeliveryMan {
 			query(deliveries(int S));
 			-+deliveries(S+1);
 			send(inform, sender, delivering(OrderId));
-			console.println("delivering " +OrderId);
-			system.sleep(math.randomInt()%1000);
+			//console.println("delivering " +OrderId);
+			//system.sleep(1);
 			list clientNameList = strings.split(OrderId, ";");
 			string clientName = prelude.headAsString(clientNameList);
-			console.println(clientName);
+			//console.println(clientName);
 			send(inform, clientName, delivered(OrderId));
-			console.println("Informimg client about the deliver " +OrderId);
+			//console.println("Informimg client about the deliver " +OrderId);
 			-+working(false);
 
 		}

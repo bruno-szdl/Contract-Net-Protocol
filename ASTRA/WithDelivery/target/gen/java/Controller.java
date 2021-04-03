@@ -611,6 +611,26 @@ public class Controller extends ASTRAClass {
 							}
 						)
 					),
+					new ModuleCall("console",
+						"Controller", new int[] {104,8,104,37},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("NCF "),
+								new Variable(Type.INTEGER, "NCF")
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("Controller","console")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					),
 					new If(
 						"Controller", new int[] {105,8,112,5},
 						new Comparison("==",
@@ -657,9 +677,9 @@ public class Controller extends ASTRAClass {
 							"Controller", new int[] {108,15,112,5},
 							new Statement[] {
 								new ModuleCall("system",
-									"Controller", new int[] {109,12,109,26},
+									"Controller", new int[] {109,12,109,28},
 									new Predicate("sleep", new Term[] {
-										Primitive.newPrimitive(1)
+										Primitive.newPrimitive(100)
 									}),
 									new DefaultModuleCallAdaptor() {
 										public boolean inline() {
@@ -690,7 +710,7 @@ public class Controller extends ASTRAClass {
 	public void initialize(astra.core.Agent agent) {
 		agent.initialize(
 			new Predicate("nClients", new Term[] {
-				Primitive.newPrimitive(10)
+				Primitive.newPrimitive(50)
 			})
 		);
 		agent.initialize(

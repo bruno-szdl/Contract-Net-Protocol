@@ -24,7 +24,7 @@ agent Controller {
 	
 		
 	/* Initial beliefs */
-	initial nClients(10); 																	
+	initial nClients(50); 																	
 	initial nRestaurants(50); 																
     initial nDeliveryMen(10);
 	initial nClientsPlaced(0);																
@@ -101,12 +101,12 @@ agent Controller {
 		: nClients(int NC){
 		int NCF = check.count(nClientsFinished(string S));
 		//debug.dumpBeliefs();
-		//console.println("NCF " + NCF);
+		console.println("NCF " + NCF);
 		if (NC == NCF){
 			console.println("---------------------- CNP 2 ------------------------");
 			system.exit();
 		} else {
-			system.sleep(1);
+			system.sleep(100);
 			!checkAllClientsFinished();
 		}
 	}
