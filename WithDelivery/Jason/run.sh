@@ -2,7 +2,7 @@
 
 nDeliveryMen=50
 nRestaurants=50
-nClients=200
+nClients=100
 nOrders=10
 
 if [ $# -eq 4 ]; then

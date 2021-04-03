@@ -37,16 +37,18 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //choose the type of restaurant
 +!init
-	:  .random(R) &																//random R
+	:  .random(Ra) & 
+	   .random(R) &																//random R
 	   typeOfFood(TOF) &														//number of different types of food
 	   N = math.floor(TOF*R) &													// 0 <= N <= 9
 	   food(N, F, Min, Max)														//get the food information
 	<- +myFoodType(F, Min, Max);												//add belief of the type of restaurant
 	   .print("I am a restaurant and I serve ", F,".");							//
 	   .abolish(food(_,_,_,_));													//clear memory
+	   .wait(R*2000);
+	   .df_register(F);
 	   -typeOfFood(_);															//clear memory
-	   !getFoodPrice;															//add goal to get the food price
-	   !register.																//add goal to register
+	   !getFoodPrice.															//add goal to get the food price
 
 //Get the price of the food
 +!getFoodPrice
@@ -61,7 +63,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   .random(YRestaurant)	&													//random Y coordinate
 	   .random(R)																//given random R
 	<- +location(XRestaurant*100, YRestaurant*100);								//add belief of the location
-		DR = 80 - 60*R;															//calculate delivery radius
+		DR = 60 - 50*R;															//calculate delivery radius
 	   +deliveryRadius(DR)														//add belief delivery radius
 	   .print("I am located in (", XRestaurant*100, ", ", YRestaurant*100, ")."). //
 
@@ -72,11 +74,6 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	<- +stars(S)
 	   .print("I have ", S, "stars."). //
 
-//Register as restaurant that sells some kind of food
-+!register
-	:  myFoodType(F,_,_)														//given food type
-	<- .wait(10);
-	   .df_register(F).															//register food type
 			
 /* ----------------- Plans as participant ----------------- */
 
@@ -102,10 +99,12 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //Client has confirmed the order
 +confirm_order(OrderId)[source(Client)] 
-	: orderAdress(OrderId, Client, XClient, YClient, D)							//given order's adress
+	: .random(R) &
+	  orderAdress(OrderId, Client, XClient, YClient, D)							//given order's adress
    <- .send(Client, tell, inform_preparing(OrderId));							//tell client the food is being prepared
       //.print("[",Client,"] preparing ", OrderId,".");							//
 	  -confirm_order(OrderId)[source(Client)];									//clear memory
+	  .wait(R*2000);
 	  +needToDeliver(OrderId, Client, XClient, YClient, D);						//add belief that a deliver must be made to the client
 	  -orderAdress(OrderId, _, _, _, _).										//clear memory
 
@@ -120,56 +119,53 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 /* ----------------- Plans as initiator ----------------- */
 
 //when the restaurant need to deliver
-+needToDeliver(_,_,_,_,_)
-	: searching(false)															//if the restaurant is not already searching for a delivery man
-	<- -+searching(true);														//update state
-	   !searchDeliveryMan.														//add goal to search for a delivery man
-
-//when the restaurant need to deliver but it's already searching for a delivery man
-+needToDeliver(_,_,_,_,_).														
++needToDeliver(OrderId,_,_,_,_)
+	<- !searchDeliveryMan(OrderId).														//add goal to search for a delivery man
 
 //search all delivery men
-+!searchDeliveryMan
++!searchDeliveryMan(OrderId)
 	:  location(XRestaurant, YRestaurant)										//given restaurant's location
-    <- .abolish(availableDeliveryMan(_));             							//clear memory
-       .abolish(notAvailableDeliveryMan); 										//clear memory
+    <- .abolish(availableDeliveryMan(OrderId,_));             							//clear memory
+       .abolish(notAvailableDeliveryMan(OrderId)); 										//clear memory
        .df_search(delivery_man, LD);                               				//search all delivery men
-       .send(LD, tell, distanceDeliveryMan(XRestaurant, YRestaurant)); 			//ask for the delivery men their locations
+       .send(LD, tell, distanceDeliveryMan(OrderId, XRestaurant, YRestaurant)); 			//ask for the delivery men their locations
        .wait(all_proposals_received(OrderId ,.length(LD)), 4000, _);			//wait delivery men to send their positions
 	   //.print("Searching available delivery men...");							//
-       !chooseDeliveryMan.														//add plan to choose a delivery man
+       !chooseDeliveryMan(OrderId).														//add plan to choose a delivery man
 
 //choose a delivery man
-+!chooseDeliveryMan
-   :  .findall(distance(D, A), availableDeliveryMan(D)[source(A)], L) & 		//put all delivery men's distances into a list
++!chooseDeliveryMan(OrderId)
+   :  .findall(distance(D, A), availableDeliveryMan(OrderId, D)[source(A)], L) & 		//put all delivery men's distances into a list
        L \== []																	//if the list is not empty
    <- //.print("Distances are: ",L,".");											//
       .min(L, distance(WD, WAg));                                        		//choose closest delivery man
       //.print("[",WAg,"] Closest delivery man is ",WAg," with ",WD,".");			//
-      !answerDeliveryMen(L, WAg).												//tell delivery men restaurant's decision
+      !answerDeliveryMen(OrderId, L, WAg).												//tell delivery men restaurant's decision
 
 //no delivery man available
-+!chooseDeliveryMan
++!chooseDeliveryMan(OrderId)
    <- //.print("No available delivery men, waiting to search again.");			//
-	  .wait(100);																//wait to search for another delivery man
-      !searchDeliveryMan.														//add goal to answer delivery men
+	  .wait(1000);																//wait to search for another delivery man
+      !searchDeliveryMan(OrderId).														//add goal to answer delivery men
 
 //answer the closest delivery man
-+!answerDeliveryMen([distance(_,WAg)|T], WAg)
-	: .findall(delivery(OrderId, Client, XClient, YClient, D), needToDeliver(OrderId, Client, XClient, YClient, D), LD) //put all restaurant's current orders into a list
-   <- .abolish(availableDeliveryMan(_));             							//clear memory
-	  .abolish(notAvailableDeliveryMan);										//clear memory
-      .send(WAg, tell, accept_proposal(LD));									//tell the closest delivery man he is the closest one
++!answerDeliveryMen(OrderId, [distance(_,WAg)|T], WAg)
+   : .random(R) &
+     needToDeliver(OrderId, Client, XClient, YClient, D)
+   <- .abolish(availableDeliveryMan(OrderId,_));             							//clear memory
+	  .abolish(notAvailableDeliveryMan(OrderId));										//clear memory
+      .wait(R*100);
+	  .send(WAg, tell, accept_proposal(OrderId, Client, XClient, YClient, D));									//tell the closest delivery man he is the closest one
       //.print("[",WAg,"] Telling ", WAg, ", he is the closest delivery man."); 	//
-      !answerDeliveryMen(T, WAg).												//answer the others
+      !answerDeliveryMen(OrderId, T, WAg).												//answer the others
 
 //answer the others
-+!answerDeliveryMen([distance(_,LAg)|T], WAg)
-   <- .send(LAg, tell, reject_proposal);										//answer the others delivery men
-      !answerDeliveryMen(T, WAg).												//answer the others
++!answerDeliveryMen(OrderId, [distance(_,LAg)|T], WAg)
+   <- .send(LAg, tell, reject_proposal(OrderId));										//answer the others delivery men
+      !answerDeliveryMen(OrderId, T, WAg).												//answer the others
 
 //stop answering
-+!answerDeliveryMen([],_).
++!answerDeliveryMen(OrderId, [],_).
 
 //the delivery man tells he is making the delivery
 +inform_done(OrderId)[source(DeliveryMan)]
@@ -178,27 +174,16 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   .abolish(orderAdress(OrderId,_,_,_,_)).			 						//clear memory
 
 //the delivery man tells he is no loinger available
-+inform_ref[source(DeliveryMan)]
++inform_ref(OrderId)[source(DeliveryMan)]
             <- //.print("[",DeliveryMan,"] is no longer available. Searching another delivery man."); //
 			   -inform_ref[source(DeliveryMan)];								//clear memory
 			   .wait(100);														//wait to search for another delivery man				
-               !searchDeliveryMan.												//add goal to search a delivery man
+               !searchDeliveryMan(OrderId).												//add goal to search a delivery man
 
 //the delivery man tells the order has been delivered
 +orderDelivered(OrderId, _)
 	<-  -orderDelivered(OrderId, _);											//clear memonry
 		.abolish(needToDeliver(OrderId, _, _, _, _)).							//clear memory
-
-//when the delivery man made all the deliveries
-+allDeliveriesDone
-	:  needToDeliver(_,_,_,_,_)													//if the resturant has new orders to deliver
-	<- -allDeliveriesDone														//clear memory
-	   !searchDeliveryMan.														//add goal to search a delivery man
-
-//when the delivery man made all the deliveries and the restaurant has no more orders
-+allDeliveriesDone
-	<- -+searching(false);														//update state
-	  -allDeliveriesDone.														//clear memory
 
 //update the rating
 +avaliation(ClientStar)[source(A)]

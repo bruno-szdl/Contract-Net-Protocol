@@ -2,8 +2,6 @@
 
 /* ----------------- Initial Beliefs ----------------- */
 
-finishedOrders(0). 																//number of finished orders
-placedOrders(0).																//number of placed orders
 typesOfFood(10). 																//number of different types of food
 count(0). 																		//auxiliar counter
 
@@ -30,23 +28,28 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	 
 /* ----------------- Initial Goals ----------------- */
 !init. 																			//add the goal chooseFood for each order
+!getSets.
 !getLocation. 																	//get the client's house location
 !getStrategy. 																	//get the order strategy (price or stars)
-
+!checkPlacedOrders. 															//check if all orders were placed
 
 /* ----------------- Plans ----------------- */
++!init
+	<- .wait(2000);
+	   !start.
+
 //add the goal chooseFood for each order
-+!init 
++!start 
 	:  count(C) &																//counter
 	   nOrders(O) &																//number of orders
 	   C < O 																	//if counter is less than number of orders
 	<- -+count(C+1);				     										//update counter
-	   .wait(100);  															//wait to place another order
+	   .wait(10);  															//wait to place another order
 	   !chooseFood(C+1) |&| !init.												//choose food for order and repeat
 
 //finished choosing foods to order
-+!init 
-	<- .print("I have finished choosing food."); 									//
++!start 
+	<- //.print("I have finished choosing food."); 									//
 	   -count(_); 																//clear memory
 	   -typesOfFood(_); 											     		//clear memory
 	   .abolish(food(_,_)).														//clear memory
@@ -55,9 +58,15 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 +!getLocation 
 	:  .random(XClient) &														//random X coordinate
 	   .random(YClient)															//random Y coordinate
-	<- +location(XClient*100, YClient*100); 									//add belief location(X,Y)
-	   .print("Hi, I am a client.\nI live in (", XClient*100, ", ", YClient*100, ").").				//
-	   
+	<- .print("Hi, I am a client.\nI live in (", XClient*100, ", ", YClient*100, ").");				//
+		+location(XClient*100, YClient*100). 									//add belief location(X,Y)
+
++!getSets
+	<- .set.create(PlacedOrdersSet);
+	   +myPlacedSet(PlacedOrdersSet);	
+	   .set.create(FinishedOrdersSet);
+	   +myFinishedSet(FinishedOrdersSet).
+
 //get the order strategy (price or stars)
 +!getStrategy 
 	:  .random(R) &																//random R
@@ -73,13 +82,13 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
        .my_name(A)																//get client's name
     <- .concat(A, ".Order", X, ".", F, OrderId); 							//generate OrderId
        +wantToEat(OrderId);  													//add belief of what the client wants to eat
-       .print("I want to eat some ", F,"."); 									//
+       //.print("I want to eat some ", F,"."); 									//
        !searchRestaurant(OrderId, F).											//add the goal to search restaurants
 	   
 //checking all available restaurants for the type of food
 +!searchRestaurant(OrderId, F)
 	:  location(XClient,YClient)												//given location of the client
-	<- .wait(100); 																//wait for restaurants to register
+	<- .wait(10); 																//wait for restaurants to register
 	   .df_search(F ,LR); 														//search all restaurants that serve that kind of food
 	   //.print("Searching ",F," restaurants..."); 								//
 	   .send(LR, tell, order(OrderId, XClient, YClient)); 						//send order for all restaurants that serve that kind of food
@@ -110,21 +119,21 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //no restaurant found
 +!chooseRestaurantByPrice(OrderId)												//if the list is empty, there is no restaurant that serves this kind of food nearby
-	:  finishedOrders(FO) &														//given the number of finished orders
-	   placedOrders(PO)															//given the number of placed orders
-    <- .print("No restaurant for ", OrderId," nearby."); 						//
+    : myPlacedSet(PlacedSet) &
+      myFinishedSet(FinishedSet)
+	<- .print("No restaurant for ", OrderId," nearby."); 						//
 	   .abolish(refuse(OrderId)); 												//clear memory
 	   .abolish(propose(OrderId,_,_,_,_));										//clear memory
        -wantToEat(OrderId);														//clear memory	
 	   +noRestaurant(OrderId);													//add the belief that there is no resturant for this kind of food
-	   -+placedOrders(PO+1);													//update placed orders (the client did not find a restaurant, but you have to count it)
-	   -+finishedOrders(FO+1).													//update finished orders (the client did not find a restaurant, but you have to count it)
+	   .set.add(PlacedSet, OrderId);													//update finished orders (the client did not find a restaurant, but you have to count it)
+	   .set.add(FinishedSet, OrderId).													//update finished orders (the client did not find a restaurant, but you have to count it)
 	   
 //choosing best rated restaurant
 +!chooseRestaurantByStar(OrderId) 
 	:  .findall(offer(S, A), propose(OrderId, _, _, _, S)[source(A)], L) &      //put all offers into a list
 	   L \== []																	//if the list is not empty
-	<- .print("Rates for ", OrderId, " are ", L,".");							//
+	<- //.print("Rates for ", OrderId, " are ", L,".");							//
 	   .max(L, offer(WOf,WAg));													//find the best rated restaurant
 	   //.print("[",WAg,"] The best rated restaurant for ",OrderId," is ",WAg," with ",WOf, " stars."); //
 	   +choose(OrderId, WAg);													//add the belief of indicating chosen restaurant for the roder
@@ -134,21 +143,22 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //no restaurant found
 +!chooseRestaurantByStar(OrderId) 												//if the list is empty, there is no restaurant that serves this kind of food nearby
-	:  finishedOrders(FO) &														//given the number of finished orders
-	   placedOrders(PO)															//given the number of placed orders
-    <- .print("No restaurant for ", OrderId," nearby.");  						//
+    : myPlacedSet(PlacedSet) &
+      myFinishedSet(FinishedSet)
+	<- .print("No restaurant for ", OrderId," nearby."); 						//
 	   .abolish(refuse(OrderId)); 												//clear memory
 	   .abolish(propose(OrderId,_,_,_,_));										//clear memory
        -wantToEat(OrderId);														//clear memory	
 	   +noRestaurant(OrderId);													//add the belief that there is no resturant for this kind of food
-	   -+placedOrders(PO+1);													//update placed orders (the client did not find a restaurant, but you have to count it)
-	   -+finishedOrders(FO+1).													//update finished orders (the client did not find a restaurant, but you have to count it)
+	   .set.add(PlacedSet, OrderId);													//update finished orders (the client did not find a restaurant, but you have to count it)
+	   .set.add(FinishedSet, OrderId).	
 
 //confirm order to the chosen restaurant
 +!answerRestaurants(OrderId, [offer(_,WAg)|T], WAg) 
-	<- .wait(50);															    //wait to confirm order of the chosen restaurant
+	:  .random(R)
+	<- .wait(R*2000);															    //wait to confirm order of the chosen restaurant
 	   .send(WAg, tell, confirm_order(OrderId));								//confirm order		
-	   //.print("[",WAg,"] waiting ",OrderId,".");								//
+	   .print("[",WAg,"] waiting ",OrderId,".");								//
 	   +waiting(OrderId, WAg);													//add the belief (waiting order)
 	   !answerRestaurants(OrderId , T, WAg).								    //add the goal to answer other restaurants
 
@@ -162,9 +172,9 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //restaurant has confirmed the order and it's preparing the food
 +inform_preparing(OrderId)[source(A)]
-	:   placedOrders(PO)														//given the number of placed orders
+	: myPlacedSet(PlacedSet)
 	<- //.print("[",A,"] is preparing the Order: ", OrderId, ".");				//
-	   -+placedOrders(PO+1).													//update placed orders
+	   .set.add(PlacedSet, OrderId).													//update placed orders
 
 //restaurant has confirmed the cancellation of the order
 +inform_cancel(OrderId)[source(A)]												
@@ -173,9 +183,9 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //delivery man delivered the food
 +orderDelivered(OrderId, Restaurant)[source(DM)]
-	:  finishedOrders(FO)														//given the number of finished orders
+    :  myFinishedSet(FinishedSet)
 	<- .print("[",Restaurant,"][",DM,"] I received the Order: ", OrderId, " from ", Restaurant, ".");//
-	   -+finishedOrders(FO+1);													//update finished orders
+	   .set.add(FinishedSet, OrderId);	
 	   +received(OrderId, Restaurant);											//add belief this order has been received
 	   .abolish(inform_preparing(OrderId));										//clear memory
 	   .abolish(waiting(OrderId,_));											//clear memory
@@ -192,22 +202,32 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   .send(Restaurant, tell, avaliation(Star)).								//rate the restaurant	
 	   
 
-//all the orders have finished
-+placedOrders(PO)
+//all the orders have been placed
++!checkPlacedOrders
 	:  nOrders(NO) &															//given number of orders
-	   PO = NO	&																//if number of placed orders is equal to the number of orders
-	   .random(R)
+	   myPlacedSet(PlacedSet) &
+	   .length(PlacedSet, N) &
+	   N == NO	
 	<- .print(" ---------------------------- Placed all my orders ---------------------------- "); //
-		+allOrdersPlaced
-	   .wait(10*R);																//wait
+		+allOrdersPlaced;
+	   .wait(1);																//wait
 	   .send("controller", tell, allOrdersPlaced).										//tell controller all orders were placed
-	   
-//all the orders have finished
-+finishedOrders(FO)
+		!checkFinishedOrders.
+
++!checkPlacedOrders
+	<- .wait(1);
+	   !checkPlacedOrders.
+
++!checkFinishedOrders
 	:  nOrders(NO) &															//given number of orders
-	   FO = NO	&																//if number of finished orders is equal to the number of orders
-	   .random(R)
+	   myFinishedSet(FinishedSet) &
+	   .length(FinishedSet, N) &
+	   N == NO	
 	<- .print(" ---------------------------- Received all my orders ---------------------------- "); //
-		+allOrdersReceived
-	   .wait(10*R)																	//wait
+		+allOrdersReceived;
+	   .wait(1);																//wait
 	   .send("controller", tell, allOrdersReceived).										//tell controller all orders were received
+
++!checkFinishedOrders
+	<- .wait(1);
+	   !checkFinishedOrders.

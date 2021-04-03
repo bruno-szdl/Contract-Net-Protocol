@@ -50,8 +50,8 @@ allClientsFinished(NC) :- .count(allOrdersReceived[source(_)], NF) &								//al
 	: nClients(NC) &															//given number of clients
 	  allClientsFinished(NC)													//if all clients are waiting for their orders
 	<- .print(" ------------------------ CNP 2 COMPLETED ------------------------ ");
-	   -+cnp2(true).
-	   //.stopMAS.
+	   -+cnp2(true);
+	   .stopMAS.
 	
 //if not
 +!checkAllClientsFinished 
