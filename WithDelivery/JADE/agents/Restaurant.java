@@ -94,12 +94,12 @@ public class Restaurant extends Agent {
                     
                         reply.setPerformative(ACLMessage.PROPOSE);
                         reply.setContent(String.valueOf(price));
-                        System.out.println("[restaurant"+myNumber+"] Proposing "+price+"$ for " + msg.getSender().getName());
+                        //System.out.println("[restaurant"+myNumber+"] Proposing "+price+"$ for " + msg.getSender().getName());
                     } 
                     else if(reqMsg.equals("I would like to order a " + myFood.getFood() + "by rate")){
                         reply.setPerformative(ACLMessage.PROPOSE);
                         reply.setContent(String.valueOf(rate));
-                        System.out.println("[restaurant"+myNumber+"] Proposing "+price+"$ for " + msg.getSender().getName());
+                        //System.out.println("[restaurant"+myNumber+"] Proposing "+price+"$ for " + msg.getSender().getName());
                     }
                     else{
                         reply.setPerformative(ACLMessage.REFUSE);
@@ -109,7 +109,7 @@ public class Restaurant extends Agent {
                 else {
                     reply.setPerformative(ACLMessage.REFUSE);
                     reply.setContent("Too far");
-                    System.out.println("[restaurant"+myNumber+"] Refusing "+ msg.getSender().getName()+ "cause he is too far");
+                    //System.out.println("[restaurant"+myNumber+"] Refusing "+ msg.getSender().getName()+ "cause he is too far");
                 }
                 myAgent.send(reply);
             } 
@@ -189,7 +189,7 @@ public class Restaurant extends Agent {
                         step = Steps.CFP;                         
                     }
                     else{
-                        System.out.println("[restaurant"+myNumber+"] No deliveryman found.");
+                       // System.out.println("[restaurant"+myNumber+"] No deliveryman found.");
                         try{
                             step = Steps.END;
                         } catch(Exception e){
@@ -211,7 +211,7 @@ public class Restaurant extends Agent {
                 cfp.setConversationId("contract");
                 cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
                 myAgent.send(cfp);
-                System.out.println("[restaurant"+myNumber+"] Sending CFP...");
+                //System.out.println("[restaurant"+myNumber+"] Sending CFP...");
                 
                 mt = MessageTemplate.and(MessageTemplate.MatchConversationId("contract"),
                                         MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
@@ -257,7 +257,7 @@ public class Restaurant extends Agent {
                 reply = myAgent.receive(mt);
                 if (reply != null) {
                     if (reply.getPerformative() == ACLMessage.INFORM) {
-                        System.out.println("[restaurant"+myNumber+"] "+ reply.getSender().getName()+ " is delivering a "  + myFood.getFood() + " to " + this.clientName);
+                        //System.out.println("[restaurant"+myNumber+"] "+ reply.getSender().getName()+ " is delivering a "  + myFood.getFood() + " to " + this.clientName);
                     } else {
                         try{
                             Thread.sleep(100);
@@ -288,7 +288,7 @@ public class Restaurant extends Agent {
             if (step == Steps.ANSWER && closestDeliveryMan == null) {
                 //restart intention
                 try{
-                    System.out.println("[restaurant"+myNumber+"] No delivery man available, trying again...");
+                    //System.out.println("[restaurant"+myNumber+"] No delivery man available, trying again...");
                     try{
                         Thread.sleep(500);
                     } catch(Exception e){

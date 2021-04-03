@@ -75,7 +75,7 @@ public class Deliveryman extends Agent {
                     } else {
                         reply.setPerformative(ACLMessage.REFUSE);
                         reply.setContent("not-available");
-                        System.out.println("[deliveryman"+myNumber+"] Not available");
+                        //System.out.println("[deliveryman"+myNumber+"] Not available");
                     }
                 }
                 else{
@@ -115,12 +115,12 @@ public class Deliveryman extends Agent {
                         jobs++;
                         money += distance_client/5;
                         myAgent.addBehaviour(new agentWorking(distance_restaurant + distance_client));
-                        System.out.println("[deliveryman"+myNumber+"] Delivering for: " + msg.getSender().getName());
+                        //System.out.println("[deliveryman"+myNumber+"] Delivering for: " + msg.getSender().getName());
                     } 
                     else{
                         reply.setPerformative(ACLMessage.FAILURE);
                         reply.setContent("not-available");
-                        System.out.println("[deliveryman"+myNumber+"] Not available anymore");
+                        //System.out.println("[deliveryman"+myNumber+"] Not available anymore");
 
                     }
                     myAgent.send(reply);
@@ -144,13 +144,13 @@ public class Deliveryman extends Agent {
 
 
         agentWorking(int t){
-            this.time = t*10;
+            this.time = 1;
             System.out.println("[deliveryman"+myNumber+"] working time: " + t);
         }
 
         public void action(){
             try{
-                Thread.sleep(10);
+                Thread.sleep(1);
                 cont++;
             } catch(Exception e){
                 System.out.println("[deliveryman"+myNumber+"] Error in 'sleep'.");
