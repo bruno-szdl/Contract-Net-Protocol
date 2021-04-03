@@ -100,11 +100,11 @@ agent Restaurant {
 		int distance = math.abs(XR - X) + math.abs(YR -Y);
 		if (distance < Rd){
 			int Total = distance/2 + P;
-			console.println("Proposing to "+OrderId);
-			system.sleep(math.randomInt()%100);
+			//console.println("Proposing to "+OrderId);
+			//system.sleep(math.randomInt()%10);
 			send(propose, sender, sendPropose(OrderId, Total, S));
 		} else{
-			system.sleep(math.randomInt()%100);
+			//system.sleep(math.randomInt()%10);
 			send(refuse, sender, sendRefuse(OrderId));
 			}
 		}
@@ -115,7 +115,7 @@ agent Restaurant {
 
 	rule @message(accept-proposal, string sender, offer_accepted(string OrderId, int Total, int X, int Y)) {
 		+needToDeliver(OrderId, sender, X, Y);
-		console.println("Preparing "+OrderId);
+		//console.println("Preparing "+OrderId);
 		query(sells(int S));
 		-+sells(S+1);
 		send(inform, sender, preparing(OrderId));

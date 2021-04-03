@@ -509,58 +509,6 @@ public class Restaurant extends ASTRAClass {
 										)
 									)
 								),
-								new ModuleCall("console",
-									"Restaurant", new int[] {103,12,103,52},
-									new Predicate("println", new Term[] {
-										Operator.newOperator('+',
-											Primitive.newPrimitive("Proposing to "),
-											new Variable(Type.STRING, "OrderId")
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return true;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Console) intention.getModule("Restaurant","console")).println(
-												(java.lang.String) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
-								new ModuleCall("system",
-									"Restaurant", new int[] {104,12,104,45},
-									new Predicate("sleep", new Term[] {
-										Operator.newOperator('%',
-											new ModuleTerm("math", Type.INTEGER,
-												new Predicate("randomInt", new Term[] {}),
-												new ModuleTermAdaptor() {
-													public Object invoke(Intention intention, Predicate predicate) {
-														return ((astra.lang.Math) intention.getModule("Restaurant","math")).randomInt(
-														);
-													}
-													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-														return ((astra.lang.Math) visitor.agent().getModule("Restaurant","math")).randomInt(
-														);
-													}
-												}
-											),
-											Primitive.newPrimitive(100)
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return false;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
-												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
 								new Send("Restaurant", new int[] {105,12,105,65},
 									new Performative("propose"),
 									new Variable(Type.STRING, "sender"),
@@ -575,38 +523,6 @@ public class Restaurant extends ASTRAClass {
 						new Block(
 							"Restaurant", new int[] {106,14,110,9},
 							new Statement[] {
-								new ModuleCall("system",
-									"Restaurant", new int[] {107,12,107,45},
-									new Predicate("sleep", new Term[] {
-										Operator.newOperator('%',
-											new ModuleTerm("math", Type.INTEGER,
-												new Predicate("randomInt", new Term[] {}),
-												new ModuleTermAdaptor() {
-													public Object invoke(Intention intention, Predicate predicate) {
-														return ((astra.lang.Math) intention.getModule("Restaurant","math")).randomInt(
-														);
-													}
-													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-														return ((astra.lang.Math) visitor.agent().getModule("Restaurant","math")).randomInt(
-														);
-													}
-												}
-											),
-											Primitive.newPrimitive(100)
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return false;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
-												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
 								new Send("Restaurant", new int[] {108,12,108,53},
 									new Performative("refuse"),
 									new Variable(Type.STRING, "sender"),
@@ -668,26 +584,6 @@ public class Restaurant extends ASTRAClass {
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "Y")
 						})
-					),
-					new ModuleCall("console",
-						"Restaurant", new int[] {118,8,118,45},
-						new Predicate("println", new Term[] {
-							Operator.newOperator('+',
-								Primitive.newPrimitive("Preparing "),
-								new Variable(Type.STRING, "OrderId")
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return true;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("Restaurant","console")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
 					),
 					new Query(
 						"Restaurant", new int[] {119,8,119,27},

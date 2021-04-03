@@ -24,19 +24,19 @@ agent Client {
 		formula sendCFP(string, int, int);
 		formula sendPropose(string, int, double);
 		formula sendRefuse(string);
-		formula placed(int);
+		formula placed(string);
 		formula offer_denied(string, int);
 		formula offer_accepted(string, int, int, int);
 		formula preparing(string);
 		formula being_prepared(string);
 		formula proposal(string, string, int, double);
 		formula refusal(string, string);
-		formula notFound(int);
+		formula notFound(string);
 		formula placedAll(string);
 		}
 
 	/* Initial beliefs */
-	initial nOrders(1); 
+	initial nOrders(10); 
 	initial typesOfFood(10);
 	initial placed(0);
 	initial notFound(0);
@@ -56,6 +56,8 @@ agent Client {
 	
 	/* Initial goals */
 	initial !init();
+	initial !checkOrdersPlaced();
+
 	
 	rule +!init()
 	: nOrders(int N) &
@@ -80,7 +82,7 @@ agent Client {
 		}
 		!getLocation();
 		!getStrategy();
-		system.sleep(100);
+		system.sleep(1);
 		!placeOrders();
 	}
 
@@ -101,27 +103,25 @@ agent Client {
 		: location(int X, int Y){
 			while(wantToOrder(string OrderId, string F)){
 				-wantToOrder(OrderId, F);
-				console.println("Starting cnp for "+OrderId);
+				//console.println("Starting cnp for "+OrderId);
 				!!cnp(OrderId, F, X, Y);
 			}
 		}
 
 	rule +!cnp(string OrderId, string F, int X, int Y) {
-			system.sleep(math.randomInt()%100);
+			//system.sleep(math.randomInt()%100);
 			!callForRestaurants(OrderId, F, X, Y);
 		}
 
 	rule +!callForRestaurants(string OrderId, string F, int X, int Y) {
-			console.println("Searching restaurants for "+OrderId);
+			//console.println("Searching restaurants for "+OrderId);
 			df.search(F, list LR);
 			+restaurant_count(OrderId, list_count(LR));
-			console.println(LR);
+			//console.println(LR);
 			if (LR == ["register"]){
-				console.println("No resturant found for "+OrderId);
-				system.sleep(math.randomInt()%100);
-				query(notFound(int N));
-				-+notFound(N+1);
-				!checkOrdersPlaced();
+				//console.println("No resturant found for "+OrderId);
+				//system.sleep(math.randomInt()%100);
+				+notFound(OrderId);
 
 			} else{
 			send(cfp, LR, sendCFP(OrderId, X, Y));
@@ -130,13 +130,13 @@ agent Client {
 
 	rule @message(propose, string sender, sendPropose(string OrderId, int Total, double S)) {
 		+proposal(OrderId, sender, Total, S);
-		console.println("Received proposal for "+OrderId+" from "+sender);
+		//console.println("Received proposal for "+OrderId+" from "+sender);
 		!call_done(OrderId);
 	}
 
 	rule @message(refuse, string sender, sendRefuse(string OrderId)) {
 		+refusal(OrderId, sender);
-		console.println("Received refusal for "+OrderId+" from "+sender);
+		//console.println("Received refusal for "+OrderId+" from "+sender);
 		!call_done(OrderId);
 	}
 
@@ -165,7 +165,7 @@ agent Client {
 					send(reject-proposal, sender, offer_denied(OrderId, Total));
 				}
 			}
-		system.sleep(math.randomInt()%100);
+		//system.sleep(math.randomInt()%100);
 		send(accept-proposal, chosen_restaurant, offer_accepted(OrderId, price, X, Y));
 		}else{
 			int rate = -1;
@@ -182,24 +182,24 @@ agent Client {
 					send(reject-proposal, sender, offer_denied(OrderId, Total));
 				}
 			}
-		console.println("Chosed "+ chosen_restaurant +" for "+OrderId);
+		//console.println("Chosed "+ chosen_restaurant +" for "+OrderId);
 		send(accept-proposal, chosen_restaurant, offer_accepted(OrderId, price, X, Y));
 		}
-		console.println("Placed order for "+OrderId);
-		system.sleep(math.randomInt()%100);
-		query(placed(int P));
-		-+placed(P+1);
-		!checkOrdersPlaced();
+		//console.println("Placed order for "+OrderId);
+		//system.sleep(math.randomInt()%100);
+		+placed(OrderId);
 
 	}
 
 	rule +!checkOrdersPlaced()
 		: nOrders(int NO){
-		query(placed(int P));
-		query(notFound(int N));
-		if (P + N == NO){
+		int N = check.count(placed(string S1)) + check.count(notFound(string S2));
+		if (N == NO){
 			console.println("Placed all my orders!!!");
 			send(inform, "main", placedAll("ok"));
+		} else{
+			//system.sleep(1);
+			!checkOrdersPlaced();
 		}
 	}
 	

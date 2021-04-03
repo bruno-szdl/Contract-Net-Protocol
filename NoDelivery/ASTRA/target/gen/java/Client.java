@@ -19,7 +19,7 @@ public class Client extends ASTRAClass {
 	public Client() {
 		setParents(new Class[] {astra.lang.Agent.class});
 		addRule(new Rule(
-			"Client", new int[] {60,9,62,23},
+			"Client", new int[] {62,9,64,23},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("init", new Term[] {})
@@ -34,11 +34,11 @@ public class Client extends ASTRAClass {
 				})
 			),
 			new Block(
-				"Client", new int[] {62,22,85,5},
+				"Client", new int[] {64,22,87,5},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.STRING, "Name"),
-						"Client", new int[] {63,8,85,5},
+						"Client", new int[] {65,8,87,5},
 						new ModuleTerm("system", Type.STRING,
 							new Predicate("name", new Term[] {}),
 							new ModuleTermAdaptor() {
@@ -54,13 +54,13 @@ public class Client extends ASTRAClass {
 						)
 					),
 					new BeliefUpdate('+',
-						"Client", new int[] {64,8,85,5},
+						"Client", new int[] {66,8,87,5},
 						new Predicate("name", new Term[] {
 							new Variable(Type.STRING, "Name")
 						})
 					),
 					new ModuleCall("console",
-						"Client", new int[] {65,8,65,43},
+						"Client", new int[] {67,8,67,43},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("Hi, I am "),
@@ -81,21 +81,21 @@ public class Client extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "X"),
-						"Client", new int[] {66,8,85,5},
+						"Client", new int[] {68,8,87,5},
 						Primitive.newPrimitive(0)
 					),
 					new While(
-						"Client", new int[] {67,8,85,5},
+						"Client", new int[] {69,8,87,5},
 						new Comparison("<",
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "N")
 						),
 						new Block(
-							"Client", new int[] {67,20,75,9},
+							"Client", new int[] {69,20,77,9},
 							new Statement[] {
 								new Assignment(
 									new Variable(Type.INTEGER, "X"),
-									"Client", new int[] {68,12,75,9},
+									"Client", new int[] {70,12,77,9},
 									Operator.newOperator('+',
 										new Variable(Type.INTEGER, "X"),
 										Primitive.newPrimitive(1)
@@ -103,7 +103,7 @@ public class Client extends ASTRAClass {
 								),
 								new Declaration(
 									new Variable(Type.INTEGER, "R"),
-									"Client", new int[] {69,12,75,9},
+									"Client", new int[] {71,12,77,9},
 									Operator.newOperator('%',
 										new ModuleTerm("math", Type.INTEGER,
 											new Predicate("randomInt", new Term[] {}),
@@ -122,7 +122,7 @@ public class Client extends ASTRAClass {
 									)
 								),
 								new Query(
-									"Client", new int[] {70,12,70,36},
+									"Client", new int[] {72,12,72,36},
 									new Predicate("food", new Term[] {
 										new Variable(Type.INTEGER, "R"),
 										new Variable(Type.STRING, "F",false)
@@ -130,7 +130,7 @@ public class Client extends ASTRAClass {
 								),
 								new Declaration(
 									new Variable(Type.STRING, "OrderId"),
-									"Client", new int[] {71,12,75,9},
+									"Client", new int[] {73,12,77,9},
 									Operator.newOperator('+',
 										new Variable(Type.STRING, "Name"),
 										Operator.newOperator('+',
@@ -146,20 +146,20 @@ public class Client extends ASTRAClass {
 									)
 								),
 								new BeliefUpdate('+',
-									"Client", new int[] {72,12,75,9},
+									"Client", new int[] {74,12,77,9},
 									new Predicate("orderId", new Term[] {
 										new Variable(Type.STRING, "OrderId")
 									})
 								),
 								new BeliefUpdate('+',
-									"Client", new int[] {73,12,75,9},
+									"Client", new int[] {75,12,77,9},
 									new Predicate("wantToOrder", new Term[] {
 										new Variable(Type.STRING, "OrderId"),
 										new Variable(Type.STRING, "F")
 									})
 								),
 								new ModuleCall("console",
-									"Client", new int[] {74,12,74,54},
+									"Client", new int[] {76,12,76,54},
 									new Predicate("println", new Term[] {
 										Operator.newOperator('+',
 											Primitive.newPrimitive("I want to eat some "),
@@ -182,7 +182,7 @@ public class Client extends ASTRAClass {
 						)
 					),
 					new ModuleCall("console",
-						"Client", new int[] {76,8,76,56},
+						"Client", new int[] {78,8,78,56},
 						new Predicate("println", new Term[] {
 							Primitive.newPrimitive("I have finished choosing food")
 						}),
@@ -199,22 +199,22 @@ public class Client extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('-',
-						"Client", new int[] {77,8,85,5},
+						"Client", new int[] {79,8,87,5},
 						new Predicate("typesOfFood", new Term[] {
 							new Variable(Type.INTEGER, "T")
 						})
 					),
 					new While(
-						"Client", new int[] {78,8,85,5},
+						"Client", new int[] {80,8,87,5},
 						new Predicate("food", new Term[] {
 							new Variable(Type.INTEGER, "Y",false),
 							new Variable(Type.STRING, "S",false)
 						}),
 						new Block(
-							"Client", new int[] {78,36,80,9},
+							"Client", new int[] {80,36,82,9},
 							new Statement[] {
 								new BeliefUpdate('-',
-									"Client", new int[] {79,12,80,9},
+									"Client", new int[] {81,12,82,9},
 									new Predicate("food", new Term[] {
 										new Variable(Type.INTEGER, "Y"),
 										new Variable(Type.STRING, "S")
@@ -224,21 +224,21 @@ public class Client extends ASTRAClass {
 						)
 					),
 					new Subgoal(
-						"Client", new int[] {81,8,85,5},
+						"Client", new int[] {83,8,87,5},
 						new Goal(
 							new Predicate("getLocation", new Term[] {})
 						)
 					),
 					new Subgoal(
-						"Client", new int[] {82,8,85,5},
+						"Client", new int[] {84,8,87,5},
 						new Goal(
 							new Predicate("getStrategy", new Term[] {})
 						)
 					),
 					new ModuleCall("system",
-						"Client", new int[] {83,8,83,24},
+						"Client", new int[] {85,8,85,22},
 						new Predicate("sleep", new Term[] {
-							Primitive.newPrimitive(100)
+							Primitive.newPrimitive(1)
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -253,7 +253,7 @@ public class Client extends ASTRAClass {
 						}
 					),
 					new Subgoal(
-						"Client", new int[] {84,8,85,5},
+						"Client", new int[] {86,8,87,5},
 						new Goal(
 							new Predicate("placeOrders", new Term[] {})
 						)
@@ -262,7 +262,7 @@ public class Client extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Client", new int[] {87,9,87,25},
+			"Client", new int[] {89,9,89,25},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("getLocation", new Term[] {})
@@ -270,11 +270,11 @@ public class Client extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Client", new int[] {87,24,92,9},
+				"Client", new int[] {89,24,94,9},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.INTEGER, "X"),
-						"Client", new int[] {88,8,92,9},
+						"Client", new int[] {90,8,94,9},
 						Operator.newOperator('%',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("randomInt", new Term[] {}),
@@ -294,7 +294,7 @@ public class Client extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "Y"),
-						"Client", new int[] {89,8,92,9},
+						"Client", new int[] {91,8,94,9},
 						Operator.newOperator('%',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("randomInt", new Term[] {}),
@@ -313,14 +313,14 @@ public class Client extends ASTRAClass {
 						)
 					),
 					new BeliefUpdate('+',
-						"Client", new int[] {90,8,92,9},
+						"Client", new int[] {92,8,94,9},
 						new Predicate("location", new Term[] {
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "Y")
 						})
 					),
 					new ModuleCall("console",
-						"Client", new int[] {91,8,91,64},
+						"Client", new int[] {93,8,93,64},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("I am located in ("),
@@ -352,7 +352,7 @@ public class Client extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Client", new int[] {94,9,94,25},
+			"Client", new int[] {96,9,96,25},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("getStrategy", new Term[] {})
@@ -360,11 +360,11 @@ public class Client extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Client", new int[] {94,24,98,9},
+				"Client", new int[] {96,24,100,9},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.INTEGER, "S"),
-						"Client", new int[] {95,8,98,9},
+						"Client", new int[] {97,8,100,9},
 						Operator.newOperator('%',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("randomInt", new Term[] {}),
@@ -383,13 +383,13 @@ public class Client extends ASTRAClass {
 						)
 					),
 					new BeliefUpdate('+',
-						"Client", new int[] {96,8,98,9},
+						"Client", new int[] {98,8,100,9},
 						new Predicate("strategy", new Term[] {
 							new Variable(Type.INTEGER, "S")
 						})
 					),
 					new ModuleCall("console",
-						"Client", new int[] {97,8,97,38},
+						"Client", new int[] {99,8,99,38},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("Strategy "),
@@ -412,7 +412,7 @@ public class Client extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Client", new int[] {100,9,101,33},
+			"Client", new int[] {102,9,103,33},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("placeOrders", new Term[] {})
@@ -423,46 +423,26 @@ public class Client extends ASTRAClass {
 				new Variable(Type.INTEGER, "Y",false)
 			}),
 			new Block(
-				"Client", new int[] {101,32,107,9},
+				"Client", new int[] {103,32,109,9},
 				new Statement[] {
 					new While(
-						"Client", new int[] {102,12,107,9},
+						"Client", new int[] {104,12,109,9},
 						new Predicate("wantToOrder", new Term[] {
 							new Variable(Type.STRING, "OrderId",false),
 							new Variable(Type.STRING, "F",false)
 						}),
 						new Block(
-							"Client", new int[] {102,56,106,13},
+							"Client", new int[] {104,56,108,13},
 							new Statement[] {
 								new BeliefUpdate('-',
-									"Client", new int[] {103,16,106,13},
+									"Client", new int[] {105,16,108,13},
 									new Predicate("wantToOrder", new Term[] {
 										new Variable(Type.STRING, "OrderId"),
 										new Variable(Type.STRING, "F")
 									})
 								),
-								new ModuleCall("console",
-									"Client", new int[] {104,16,104,60},
-									new Predicate("println", new Term[] {
-										Operator.newOperator('+',
-											Primitive.newPrimitive("Starting cnp for "),
-											new Variable(Type.STRING, "OrderId")
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return true;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Console) intention.getModule("Client","console")).println(
-												(java.lang.String) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
 								new SpawnGoal(
-									"Client", new int[] {105,16,106,13},
+									"Client", new int[] {107,16,108,13},
 									new Goal(
 										new Predicate("cnp", new Term[] {
 											new Variable(Type.STRING, "OrderId"),
@@ -479,7 +459,7 @@ public class Client extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Client", new int[] {109,9,109,56},
+			"Client", new int[] {111,9,111,56},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("cnp", new Term[] {
@@ -492,42 +472,10 @@ public class Client extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Client", new int[] {109,55,112,9},
+				"Client", new int[] {111,55,114,9},
 				new Statement[] {
-					new ModuleCall("system",
-						"Client", new int[] {110,12,110,45},
-						new Predicate("sleep", new Term[] {
-							Operator.newOperator('%',
-								new ModuleTerm("math", Type.INTEGER,
-									new Predicate("randomInt", new Term[] {}),
-									new ModuleTermAdaptor() {
-										public Object invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Math) intention.getModule("Client","math")).randomInt(
-											);
-										}
-										public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-											return ((astra.lang.Math) visitor.agent().getModule("Client","math")).randomInt(
-											);
-										}
-									}
-								),
-								Primitive.newPrimitive(100)
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return false;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.System) intention.getModule("Client","system")).sleep(
-									(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
-					),
 					new Subgoal(
-						"Client", new int[] {111,12,112,9},
+						"Client", new int[] {113,12,114,9},
 						new Goal(
 							new Predicate("callForRestaurants", new Term[] {
 								new Variable(Type.STRING, "OrderId"),
@@ -541,7 +489,7 @@ public class Client extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Client", new int[] {114,9,114,71},
+			"Client", new int[] {116,9,116,71},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("callForRestaurants", new Term[] {
@@ -554,30 +502,10 @@ public class Client extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Client", new int[] {114,70,129,9},
+				"Client", new int[] {116,70,129,9},
 				new Statement[] {
-					new ModuleCall("console",
-						"Client", new int[] {115,12,115,65},
-						new Predicate("println", new Term[] {
-							Operator.newOperator('+',
-								Primitive.newPrimitive("Searching restaurants for "),
-								new Variable(Type.STRING, "OrderId")
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return true;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("Client","console")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
-					),
 					new ModuleCall("df",
-						"Client", new int[] {116,12,116,33},
+						"Client", new int[] {118,12,118,33},
 						new Predicate("search", new Term[] {
 							new Variable(Type.STRING, "F"),
 							new Variable(Type.LIST, "LR",false)
@@ -596,7 +524,7 @@ public class Client extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('+',
-						"Client", new int[] {117,12,129,9},
+						"Client", new int[] {119,12,129,9},
 						new Predicate("restaurant_count", new Term[] {
 							new Variable(Type.STRING, "OrderId"),
 							new Count(
@@ -604,25 +532,8 @@ public class Client extends ASTRAClass {
 							)
 						})
 					),
-					new ModuleCall("console",
-						"Client", new int[] {118,12,118,31},
-						new Predicate("println", new Term[] {
-							new Variable(Type.LIST, "LR")
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return true;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("Client","console")).println(
-									(astra.term.ListTerm) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
-					),
 					new If(
-						"Client", new int[] {119,12,129,9},
+						"Client", new int[] {121,12,129,9},
 						new Comparison("==",
 							new Variable(Type.LIST, "LR"),
 							new ListTerm(new Term[] {
@@ -630,80 +541,13 @@ public class Client extends ASTRAClass {
 							})
 						),
 						new Block(
-							"Client", new int[] {119,35,126,13},
+							"Client", new int[] {121,35,126,13},
 							new Statement[] {
-								new ModuleCall("console",
-									"Client", new int[] {120,16,120,66},
-									new Predicate("println", new Term[] {
-										Operator.newOperator('+',
-											Primitive.newPrimitive("No resturant found for "),
-											new Variable(Type.STRING, "OrderId")
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return true;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Console) intention.getModule("Client","console")).println(
-												(java.lang.String) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
-								new ModuleCall("system",
-									"Client", new int[] {121,16,121,49},
-									new Predicate("sleep", new Term[] {
-										Operator.newOperator('%',
-											new ModuleTerm("math", Type.INTEGER,
-												new Predicate("randomInt", new Term[] {}),
-												new ModuleTermAdaptor() {
-													public Object invoke(Intention intention, Predicate predicate) {
-														return ((astra.lang.Math) intention.getModule("Client","math")).randomInt(
-														);
-													}
-													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-														return ((astra.lang.Math) visitor.agent().getModule("Client","math")).randomInt(
-														);
-													}
-												}
-											),
-											Primitive.newPrimitive(100)
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return false;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.System) intention.getModule("Client","system")).sleep(
-												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
-								new Query(
-									"Client", new int[] {122,16,122,38},
-									new Predicate("notFound", new Term[] {
-										new Variable(Type.INTEGER, "N",false)
-									})
-								),
-								new SpecialBeliefUpdate(
-									"Client", new int[] {123,16,126,13},
-									new Predicate("notFound", new Term[] {
-										Operator.newOperator('+',
-											new Variable(Type.INTEGER, "N"),
-											Primitive.newPrimitive(1)
-										)
-									})
-								),
-								new Subgoal(
+								new BeliefUpdate('+',
 									"Client", new int[] {124,16,126,13},
-									new Goal(
-										new Predicate("checkOrdersPlaced", new Term[] {})
-									)
+									new Predicate("notFound", new Term[] {
+										new Variable(Type.STRING, "OrderId")
+									})
 								)
 							}
 						),
@@ -749,32 +593,6 @@ public class Client extends ASTRAClass {
 							new Variable(Type.DOUBLE, "S")
 						})
 					),
-					new ModuleCall("console",
-						"Client", new int[] {133,8,133,73},
-						new Predicate("println", new Term[] {
-							Operator.newOperator('+',
-								Primitive.newPrimitive("Received proposal for "),
-								Operator.newOperator('+',
-									new Variable(Type.STRING, "OrderId"),
-									Operator.newOperator('+',
-										Primitive.newPrimitive(" from "),
-										new Variable(Type.STRING, "sender")
-									)
-								)
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return true;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("Client","console")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
-					),
 					new Subgoal(
 						"Client", new int[] {134,8,135,5},
 						new Goal(
@@ -805,32 +623,6 @@ public class Client extends ASTRAClass {
 							new Variable(Type.STRING, "OrderId"),
 							new Variable(Type.STRING, "sender")
 						})
-					),
-					new ModuleCall("console",
-						"Client", new int[] {139,8,139,72},
-						new Predicate("println", new Term[] {
-							Operator.newOperator('+',
-								Primitive.newPrimitive("Received refusal for "),
-								Operator.newOperator('+',
-									new Variable(Type.STRING, "OrderId"),
-									Operator.newOperator('+',
-										Primitive.newPrimitive(" from "),
-										new Variable(Type.STRING, "sender")
-									)
-								)
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return true;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("Client","console")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
 					),
 					new Subgoal(
 						"Client", new int[] {140,8,141,5},
@@ -940,11 +732,11 @@ public class Client extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Client", new int[] {151,44,194,5},
+				"Client", new int[] {151,44,192,5},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.STRING, "chosen_restaurant"),
-						"Client", new int[] {152,8,194,5},
+						"Client", new int[] {152,8,192,5},
 						Primitive.newPrimitive("")
 					),
 					new Query(
@@ -961,7 +753,7 @@ public class Client extends ASTRAClass {
 						})
 					),
 					new If(
-						"Client", new int[] {155,8,194,5},
+						"Client", new int[] {155,8,192,5},
 						new Comparison("==",
 							new Variable(Type.INTEGER, "St"),
 							Primitive.newPrimitive(0)
@@ -1043,38 +835,6 @@ public class Client extends ASTRAClass {
 										}
 									)
 								),
-								new ModuleCall("system",
-									"Client", new int[] {168,8,168,41},
-									new Predicate("sleep", new Term[] {
-										Operator.newOperator('%',
-											new ModuleTerm("math", Type.INTEGER,
-												new Predicate("randomInt", new Term[] {}),
-												new ModuleTermAdaptor() {
-													public Object invoke(Intention intention, Predicate predicate) {
-														return ((astra.lang.Math) intention.getModule("Client","math")).randomInt(
-														);
-													}
-													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-														return ((astra.lang.Math) visitor.agent().getModule("Client","math")).randomInt(
-														);
-													}
-												}
-											),
-											Primitive.newPrimitive(100)
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return false;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.System) intention.getModule("Client","system")).sleep(
-												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
 								new Send("Client", new int[] {169,8,169,86},
 									new Performative("accept-proposal"),
 									new Variable(Type.STRING, "chosen_restaurant"),
@@ -1088,7 +848,7 @@ public class Client extends ASTRAClass {
 							}
 						),
 						new Block(
-							"Client", new int[] {170,13,194,5},
+							"Client", new int[] {170,13,192,5},
 							new Statement[] {
 								new Declaration(
 									new Variable(Type.INTEGER, "rate"),
@@ -1174,32 +934,6 @@ public class Client extends ASTRAClass {
 										}
 									)
 								),
-								new ModuleCall("console",
-									"Client", new int[] {185,8,185,70},
-									new Predicate("println", new Term[] {
-										Operator.newOperator('+',
-											Primitive.newPrimitive("Chosed "),
-											Operator.newOperator('+',
-												new Variable(Type.STRING, "chosen_restaurant"),
-												Operator.newOperator('+',
-													Primitive.newPrimitive(" for "),
-													new Variable(Type.STRING, "OrderId")
-												)
-											)
-										)
-									}),
-									new DefaultModuleCallAdaptor() {
-										public boolean inline() {
-											return true;
-										}
-
-										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Console) intention.getModule("Client","console")).println(
-												(java.lang.String) intention.evaluate(predicate.getTerm(0))
-											);
-										}
-									}
-								),
 								new Send("Client", new int[] {186,8,186,86},
 									new Performative("accept-proposal"),
 									new Variable(Type.STRING, "chosen_restaurant"),
@@ -1213,84 +947,17 @@ public class Client extends ASTRAClass {
 							}
 						)
 					),
-					new ModuleCall("console",
-						"Client", new int[] {188,8,188,52},
-						new Predicate("println", new Term[] {
-							Operator.newOperator('+',
-								Primitive.newPrimitive("Placed order for "),
-								new Variable(Type.STRING, "OrderId")
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return true;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.Console) intention.getModule("Client","console")).println(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
-					),
-					new ModuleCall("system",
-						"Client", new int[] {189,8,189,41},
-						new Predicate("sleep", new Term[] {
-							Operator.newOperator('%',
-								new ModuleTerm("math", Type.INTEGER,
-									new Predicate("randomInt", new Term[] {}),
-									new ModuleTermAdaptor() {
-										public Object invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Math) intention.getModule("Client","math")).randomInt(
-											);
-										}
-										public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
-											return ((astra.lang.Math) visitor.agent().getModule("Client","math")).randomInt(
-											);
-										}
-									}
-								),
-								Primitive.newPrimitive(100)
-							)
-						}),
-						new DefaultModuleCallAdaptor() {
-							public boolean inline() {
-								return false;
-							}
-
-							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((astra.lang.System) intention.getModule("Client","system")).sleep(
-									(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
-								);
-							}
-						}
-					),
-					new Query(
-						"Client", new int[] {190,8,190,28},
+					new BeliefUpdate('+',
+						"Client", new int[] {190,8,192,5},
 						new Predicate("placed", new Term[] {
-							new Variable(Type.INTEGER, "P",false)
+							new Variable(Type.STRING, "OrderId")
 						})
-					),
-					new SpecialBeliefUpdate(
-						"Client", new int[] {191,8,194,5},
-						new Predicate("placed", new Term[] {
-							Operator.newOperator('+',
-								new Variable(Type.INTEGER, "P"),
-								Primitive.newPrimitive(1)
-							)
-						})
-					),
-					new Subgoal(
-						"Client", new int[] {192,8,194,5},
-						new Goal(
-							new Predicate("checkOrdersPlaced", new Term[] {})
-						)
 					)
 				}
 			)
 		));
 		addRule(new Rule(
-			"Client", new int[] {196,9,197,26},
+			"Client", new int[] {194,9,195,26},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("checkOrdersPlaced", new Term[] {})
@@ -1300,34 +967,63 @@ public class Client extends ASTRAClass {
 				new Variable(Type.INTEGER, "NO",false)
 			}),
 			new Block(
-				"Client", new int[] {197,25,204,5},
+				"Client", new int[] {195,25,204,5},
 				new Statement[] {
-					new Query(
-						"Client", new int[] {198,8,198,28},
-						new Predicate("placed", new Term[] {
-							new Variable(Type.INTEGER, "P",false)
-						})
-					),
-					new Query(
-						"Client", new int[] {199,8,199,30},
-						new Predicate("notFound", new Term[] {
-							new Variable(Type.INTEGER, "N",false)
-						})
+					new Declaration(
+						new Variable(Type.INTEGER, "N"),
+						"Client", new int[] {196,8,204,5},
+						Operator.newOperator('+',
+							new ModuleTerm("check", Type.INTEGER,
+								new Predicate("count", new Term[] {
+									new Funct("placed", new Term[] {
+										new Variable(Type.STRING, "S1",false)
+									})
+								}),
+								new ModuleTermAdaptor() {
+									public Object invoke(Intention intention, Predicate predicate) {
+										return ((Check) intention.getModule("Client","check")).count(
+											(astra.term.Funct) intention.evaluate(predicate.getTerm(0))
+										);
+									}
+									public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+										return ((Check) visitor.agent().getModule("Client","check")).count(
+											(astra.term.Funct) visitor.evaluate(predicate.getTerm(0))
+										);
+									}
+								}
+							),
+							new ModuleTerm("check", Type.INTEGER,
+								new Predicate("count", new Term[] {
+									new Funct("notFound", new Term[] {
+										new Variable(Type.STRING, "S2",false)
+									})
+								}),
+								new ModuleTermAdaptor() {
+									public Object invoke(Intention intention, Predicate predicate) {
+										return ((Check) intention.getModule("Client","check")).count(
+											(astra.term.Funct) intention.evaluate(predicate.getTerm(0))
+										);
+									}
+									public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+										return ((Check) visitor.agent().getModule("Client","check")).count(
+											(astra.term.Funct) visitor.evaluate(predicate.getTerm(0))
+										);
+									}
+								}
+							)
+						)
 					),
 					new If(
-						"Client", new int[] {200,8,204,5},
+						"Client", new int[] {197,8,204,5},
 						new Comparison("==",
-							Operator.newOperator('+',
-								new Variable(Type.INTEGER, "P"),
-								new Variable(Type.INTEGER, "N")
-							),
+							new Variable(Type.INTEGER, "N"),
 							new Variable(Type.INTEGER, "NO")
 						),
 						new Block(
-							"Client", new int[] {200,24,203,9},
+							"Client", new int[] {197,20,200,9},
 							new Statement[] {
 								new ModuleCall("console",
-									"Client", new int[] {201,12,201,54},
+									"Client", new int[] {198,12,198,54},
 									new Predicate("println", new Term[] {
 										Primitive.newPrimitive("Placed all my orders!!!")
 									}),
@@ -1343,12 +1039,23 @@ public class Client extends ASTRAClass {
 										}
 									}
 								),
-								new Send("Client", new int[] {202,12,202,49},
+								new Send("Client", new int[] {199,12,199,49},
 									new Performative("inform"),
 									Primitive.newPrimitive("main"),
 									new Predicate("placedAll", new Term[] {
 										Primitive.newPrimitive("ok")
 									})
+								)
+							}
+						),
+						new Block(
+							"Client", new int[] {200,14,204,5},
+							new Statement[] {
+								new Subgoal(
+									"Client", new int[] {202,12,203,9},
+									new Goal(
+										new Predicate("checkOrdersPlaced", new Term[] {})
+									)
 								)
 							}
 						)
@@ -1361,7 +1068,7 @@ public class Client extends ASTRAClass {
 	public void initialize(astra.core.Agent agent) {
 		agent.initialize(
 			new Predicate("nOrders", new Term[] {
-				Primitive.newPrimitive(1)
+				Primitive.newPrimitive(10)
 			})
 		);
 		agent.initialize(
@@ -1442,6 +1149,11 @@ public class Client extends ASTRAClass {
 		agent.initialize(
 			new Goal(
 				new Predicate("init", new Term[] {})
+			)
+		);
+		agent.initialize(
+			new Goal(
+				new Predicate("checkOrdersPlaced", new Term[] {})
 			)
 		);
 	}

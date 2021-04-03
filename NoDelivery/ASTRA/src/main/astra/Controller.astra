@@ -5,6 +5,9 @@ agent Controller {
 	module Messaging messaging;
 	module Console console;
 	module System system;
+	module Debug debug;
+	module Check check;
+
 	
 	/* Types*/
 	types controllerTypes {
@@ -12,7 +15,7 @@ agent Controller {
 		formula nRestaurants(int);
 		formula nDeliveryMen(int);
 		formula placedAll(string);
-		formula nClientsPlaced(int);
+		formula nClientsPlaced(string);
 		}
 	
 		
@@ -25,6 +28,8 @@ agent Controller {
 	/* Initial goals */
 	initial !iniciateServiceMsg();
 	initial !createAgents();
+	initial	!checkAllClientsPlaced();
+
 	
 	/* Plans */
 	rule +!iniciateServiceMsg() {
@@ -54,7 +59,7 @@ agent Controller {
 		    	console.println("Created restaurant_"+X+" Agent");
 		    	X = X + 1;
 			}
-			system.sleep(1000);
+			system.sleep(100);
 			X = 1;
 			while (X <= C){
 				system.createAgent("client_"+X, "Client");
@@ -65,16 +70,19 @@ agent Controller {
 
 	rule @message(inform, string sender, placedAll(string S)){
 		console.println("---------------------- Received " +sender);
-		query(nClientsPlaced(int N));
-		-+nClientsPlaced(N+1);
-		!checkAllClientsPlaced();
+		+nClientsPlaced(sender);
 	}
 
 	rule +!checkAllClientsPlaced()
 		: nClients(int NC){
-		query(nClientsPlaced(int NCP));
+		int NCP = check.count(nClientsPlaced(string S));
+		//debug.dumpBeliefs();
+		console.println(NCP);
 		if (NC == NCP){
 			console.println("---------------------- CNP 1 ------------------------");
+		} else {
+			system.sleep(1);
+			!checkAllClientsPlaced();
 		}
 	}
 
