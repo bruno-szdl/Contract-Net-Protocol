@@ -1,0 +1,81 @@
+/* Client Class*/
+agent Controller {
+
+	/* Modules*/
+	module Messaging messaging;
+	module Console console;
+	module System system;
+	
+	/* Types*/
+	types controllerTypes {
+		formula nClients(int);
+		formula nRestaurants(int);
+		formula nDeliveryMen(int);
+		formula placedAll(string);
+		formula nClientsPlaced(int);
+		}
+	
+		
+	/* Initial beliefs */
+	initial nClients(200); 																	
+	initial nRestaurants(50); 																
+    initial nDeliveryMen(1);
+	initial nClientsPlaced(0);																
+	
+	/* Initial goals */
+	initial !iniciateServiceMsg();
+	initial !createAgents();
+	
+	/* Plans */
+	rule +!iniciateServiceMsg() {
+	    messaging.installService("local", "astra.messaging.LocalMQService");
+        messaging.startService("local");
+		system.createAgent("register", "Register");
+	}
+
+
+
+	//creating deliverymen agents
+
+	rule +!createAgents() :
+		nDeliveryMen(int D) &
+		nRestaurants(int R) &
+		nClients(int C) {
+			console.println(system.name());
+			int X = 1;
+			while (X <= D){
+				system.createAgent("delivery_man_"+X, "DeliveryMan");
+		    	console.println("Created delivery_man_"+X+" Agent");
+		    	X = X + 1;
+			}
+			X = 1;
+			while (X <= R){
+				system.createAgent("restaurant_"+X, "Restaurant");
+		    	console.println("Created restaurant_"+X+" Agent");
+		    	X = X + 1;
+			}
+			system.sleep(1000);
+			X = 1;
+			while (X <= C){
+				system.createAgent("client_"+X, "Client");
+		    	console.println("Created client_"+X+" Agent");
+		    	X = X + 1;
+		}
+	}
+
+	rule @message(inform, string sender, placedAll(string S)){
+		console.println("---------------------- Received " +sender);
+		query(nClientsPlaced(int N));
+		-+nClientsPlaced(N+1);
+		!checkAllClientsPlaced();
+	}
+
+	rule +!checkAllClientsPlaced()
+		: nClients(int NC){
+		query(nClientsPlaced(int NCP));
+		if (NC == NCP){
+			console.println("---------------------- CNP 1 ------------------------");
+		}
+	}
+
+}

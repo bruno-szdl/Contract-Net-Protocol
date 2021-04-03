@@ -80,7 +80,7 @@ food(9, sfiha, 20, 40).
 	<- Total = D/2 + FP;														//calculate total price (food + delivery)
 	   +orderAdress(OrderId, Client, XClient, YClient, D);						//add belief of the client's adress
 	   //.print("[",Client,"] proposing ",Total, " for Order: ", OrderId,"."); 	//
-	   .send(Client, tell, propose(OrderId, Total, FP, D, S));					//send proposal to the client
+	   .send(Client, tell, propose(OrderId, Total, S));					//send proposal to the client
 	   -order(OrderId,_,_).            											//clear memory
 	   
 //client is too far

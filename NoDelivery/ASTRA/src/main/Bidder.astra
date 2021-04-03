@@ -1,0 +1,22 @@
+agent Bidder {// extends CNP {
+    
+    types auction {
+        formula auction(string, funct);
+        formula offer(string, int);
+        formula no_offer(string);
+    }
+
+    module Math math;
+    module Df df;
+
+    initial !register();
+
+    rule +!register() {
+        df.register("participant");
+    }
+
+    rule @message(cfp, string sender, auction(string id, funct task)) {
+        send(propose, sender, offer(id, ((math.randomInt()%10)*10) + 100));
+    }
+
+}

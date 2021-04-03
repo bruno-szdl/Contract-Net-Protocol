@@ -1,0 +1,32 @@
+agent Auctioneer extends CNP {
+
+    types auctioneer {
+        formula remaining(int);
+    }
+
+    initial !register();
+
+    rule +!register() {
+        df.register("initiator");
+    }
+
+    rule +!main([int N]) {
+        +remaining(N);
+        int i=0;
+        while (i < N) {
+            !!cnp("lot_"+i, fix("computer"), config(5000));
+            i++;
+        }
+    }
+
+    rule +finished(string id) {
+        synchronized (update_remaining_token) {
+            query(remaining(int count));
+            -+remaining(count-1);
+        }
+    }
+
+    rule +remaining(0) {
+        system.exit();
+    }    
+}

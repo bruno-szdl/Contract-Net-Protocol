@@ -97,7 +97,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	
 //choosing cheapest restaurant	
 +!chooseRestaurantByPrice(OrderId) 
-	:  .findall(offer(T, A), propose(OrderId, T, _, _, _)[source(A)], L) &      //put all offers into a list
+	:  .findall(offer(T, A), propose(OrderId, T, _,)[source(A)], L) &      //put all offers into a list
 	   L \== []																	//if the list is not empty
 	<- //.print("Prices for ", OrderId, " are ", L,"."); 						//
 	   .min(L, offer(WOf,WAg));													//find the cheapest restaurant
@@ -119,7 +119,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   
 //choosing best rated restaurant
 +!chooseRestaurantByStar(OrderId) 
-	:  .findall(offer(S, A), propose(OrderId, _, _, _, S)[source(A)], L) &      //put all offers into a list
+	:  .findall(offer(S, A), propose(OrderId, _, S)[source(A)], L) &      //put all offers into a list
 	   L \== []																	//if the list is not empty
 	<- .print("Rates for ", OrderId, " are ", L,".");							//
 	   .max(L, offer(WOf,WAg));													//find the best rated restaurant

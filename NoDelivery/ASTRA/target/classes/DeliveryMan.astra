@@ -1,10 +1,26 @@
 agent DeliveryMan {
 
 	module Console console;
+	module Debug debug;
+
+	types typesOfFoodType {
+		formula typesOfFood(int);
+	}
 	
+	initial typesOfFood(1);
+	initial typesOfFood(2);
 	initial !init();
 
-	rule +!init() {
+	rule +!init()
+		{
 		console.println("HI");
+		debug.dumpBeliefs();
+		while (typesOfFood(int X)){
+			-typesOfFood(X);
+			debug.dumpBeliefs();
+		}
+
+		
+
 	}
 }

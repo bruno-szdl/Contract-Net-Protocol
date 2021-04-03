@@ -1,50 +1,45 @@
 agent Restaurant {
 
 	/* Modules*/
+	module Functions func;
 	module Console console;
 	module System system;
 	module Math math;
+	module Df df;
 	
 	/* Types*/
-	types typesOfFoodType {
+	types restaurantTypes {
 		formula typesOfFood(int);
-		}
-	types foodType {
 		formula food(int, string, int, int);
-		}
-	types priceType {
 		formula price(int);
-		}
-	types starsType {
-		formula stars(double);
-		}
-	types thinkingType {
+		formula rate(double);
 		formula thinking(boolean);
-		}
-	types sellsType {
 		formula sells(int);
-		}
-	types searchingType {
 		formula searching(boolean);
-		}
-	types locationType {
 		formula location(int, int);
-		}
-	types serveType {
+		formula radius(int);
 		formula serve(string);
-		}
-	types nameType {
 		formula name(string);
+		formula sendCFP(string, int, int);
+		formula sendPropose(string, int, double);
+		formula sendRefuse(string);
+		formula orderAdress(string, string, int, int, int);
+		formula sendRefuse(string, string);
+		formula offer_denied(string, int);
+		formula offer_accepted(string, int, int, int);
+		formula tell(string);
+		formula needToDeliver(string, string, int, int);
+		formula preparing(string);
 		}
 
 	/* Initial beliefs */
-	initial stars(5);
 	initial sells(0); 																
 	initial thinking(false); 																
 	initial searching(false);																
 	initial typesOfFood(10);														
 	
 	// food(Id, Name)
+
 	initial food(0, "pizza", 20, 100);
 	initial food(1, "hamburger", 10, 50);
 	initial food(2, "burrito", 18, 50);
@@ -57,18 +52,23 @@ agent Restaurant {
 	initial food(9, "sfiha", 20, 40);
 	
 	/* Initial goals */
+
 	initial !init();
     initial !getLocation();
+	initial !getRate();
 	
 	/* Initial goals */
 	rule +!init() : typesOfFood(int T){
 		string Name = system.name();
 		+name(Name);
 		console.println("Hi, I am " + Name);
-		int R = math.randomInt()/225000000;
-		//console.println("choosing food" + R);
-		!chooseFood(R);
-		system.sleep(100);
+		int R = math.randomInt()%10;
+		query(food(R, string F, int minPrice, int maxPrice));
+		df.register(F);
+		int P = (10*minPrice + (maxPrice - minPrice)*(math.randomInt()%10))/10;
+	 	console.println("I serve " + F + " for " + P + "$.");
+	 	+price(P);
+	 	+serve(F);
 		-typesOfFood(T);
 		int X = 0;
 		while(X < T){
@@ -76,20 +76,49 @@ agent Restaurant {
 			X = X + 1;
 			}
 		}
-		
-	 rule +!chooseFood(int R) :
-	 	food(R, string F, int minPrice, int maxPrice) {
-	 		int Rand = math.randomInt()/225000000;
-	 		int P = (9*minPrice + (maxPrice - minPrice)*Rand)/90;
-	 		console.println("I serve " + F + " for " + P + "$.");
-	 		+price(P);
-	 		+serve(F);
-	 		}
 	 			
 	rule +!getLocation(){
-		int X = math.randomInt()/100000000;
-		int Y = math.randomInt()/100000000;
+		int X = math.randomInt()%100;
+		int Y = math.randomInt()%100;
+		int R = math.randomInt()%100;
+		int Radius = 80 - 60*R;
 		+location(X, Y);
-		console.println("I am located in ("+ X + ", "+ Y + ").");
+		+radius(Radius);
+		console.println("I am located in ("+ X + ", "+ Y + "). My delivery radius is "+Radius+"m.");
 		}
+
+	rule +!getRate(){
+		double S = 5.0;
+		+rate(S);
+		}
+
+	rule @message(cfp, string sender, sendCFP(string OrderId, int X, int Y)) {
+		query(location(int XR, int YR));
+		query(radius(int Rd));
+		query(price(int P));
+		query(rate(double S));
+		int distance = math.abs(XR - X) + math.abs(YR -Y);
+		if (distance < Rd){
+			int Total = distance/2 + P;
+			console.println("Proposing to "+OrderId);
+			system.sleep(math.randomInt()%100);
+			send(propose, sender, sendPropose(OrderId, Total, S));
+		} else{
+			system.sleep(math.randomInt()%100);
+			send(refuse, sender, sendRefuse(OrderId));
+			}
+		}
+
+	rule @message(reject-proposal, string sender, offer_denied(string OrderId, int Total)) {
+		send(inform, sender, tell("ok"));
+	}
+
+	rule @message(accept-proposal, string sender, offer_accepted(string OrderId, int Total, int X, int Y)) {
+		+needToDeliver(OrderId, sender, X, Y);
+		console.println("Preparing "+OrderId);
+		query(sells(int S));
+		-+sells(S+1);
+		send(inform, sender, preparing(OrderId));
+	}
 }
+

@@ -1,13 +1,13 @@
 #! /bin/bash
 
-nRestaurants=10
-nClients=1
-nOrders=2
+# nRestaurants=10
+# nClients=1
+# nOrders=2
 
-if [ $# -eq 3 ]; then
-    nRestaurants=$1
-    nClients=$2
-    nCNPs=$3
-fi
+# if [ $# -eq 3 ]; then
+#     nRestaurants=$1
+#     nClients=$2
+#     nCNPs=$3
+# fi
 
-mvn clean compile astra:deploy -$nRestaurants -$nClients -$nOrders
+mvn -Dastra.main=Controller

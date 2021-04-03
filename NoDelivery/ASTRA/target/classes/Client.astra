@@ -7,49 +7,42 @@ agent Client {
 	module Math math;
 	module Prelude prelude;
 	module Debug debug;
+	module Df df;
+	module Check check;
 	
 	/* Types*/
-	types foodType {
+	types clientTypes {
 		formula food(int, string);
-		}
-	types nOrdersType {
 		formula nOrders(int);
-		}
-	types finishedOrdersType {
-		formula finishedOrders(int);
-		}
-	types placedOrdersType {
-		formula placedOrders(int);
-		}
-	types typesOfFoodType {
+		formula restaurant_count(string, int);
 		formula typesOfFood(int);
-		}
-	types locationType {
 		formula location(int, int);
-		}
-	types wantToEatType {
-		formula wantToEat(string);
-		}
-	types orderIdType {
+		formula wantToOrder(string, string);
 		formula orderId(string);
-		}
-	types nameType {
 		formula name(string);
-		}
-	types strategyType {
 		formula strategy(int);
-		}		
-	types restaurantsType {
-		formula restaurants(list);
+		formula sendCFP(string, int, int);
+		formula sendPropose(string, int, double);
+		formula sendRefuse(string);
+		formula placed(int);
+		formula offer_denied(string, int);
+		formula offer_accepted(string, int, int, int);
+		formula preparing(string);
+		formula being_prepared(string);
+		formula proposal(string, string, int, double);
+		formula refusal(string, string);
+		formula notFound(int);
+		formula placedAll(string);
 		}
 
 	/* Initial beliefs */
-	initial nOrders(3); 																	//number of orders (CNPs)
-	initial finishedOrders(0); 																//number of finished orders
-	initial placedOrders(0);																//number of placed orders
-	initial typesOfFood(10);													//number of different types of food																	//auxiliar counter
+	initial nOrders(1); 
+	initial typesOfFood(10);
+	initial placed(0);
+	initial notFound(0);
 	
 	// food(Id, Name)
+	
 	initial food(0, "pizza");
 	initial food(1, "hamburger");
 	initial food(2, "burrito");
@@ -63,67 +56,151 @@ agent Client {
 	
 	/* Initial goals */
 	initial !init();
-	initial !getLocation();
-	initial !getStrategy();
 	
-	rule +!init() : nOrders(int N)
-					& typesOfFood(int T){
+	rule +!init()
+	: nOrders(int N) &
+	typesOfFood(int T){
 		string Name = system.name();
 		+name(Name);
 		console.println("Hi, I am " + Name);
-		system.sleep(100);
-		list RestaurantsList = system.getAgentsOfType("Restaurant");
-		+restaurants(RestaurantsList);
-		console.println(RestaurantsList);
 		int X = 0;
 		while(X < N){
 			X = X + 1;
-			int R = math.randomInt()/225000000;
-			console.println("choosing food" + R);
-			!chooseFood(X, R);
-			system.sleep(10);
-			}
+			int R = math.randomInt()%10;
+			query(food(R, string F));
+			string OrderId = Name + ".Order_" + X + "." + F;
+			+orderId(OrderId);
+			+wantToOrder(OrderId, F);
+			console.println("I want to eat some " + F);
+		}
 		console.println("I have finished choosing food");
 		-typesOfFood(T);
-		X = 0;
-		while(X < T){
-			-food(X, string S);
-			X = X + 1;
-			}
-		debug.dumpBeliefs();
-
+		while(food(int Y, string S)){
+			-food(Y, S);
 		}
-		
-	 rule +!chooseFood(int X, int R) :
-	 	food(R, string F) &
-	 	name(string Name){
-	 		string OrderId = Name + ".Order_" + X + "." + F;
-	 		+orderId(OrderId);
-	 		console.println("I want to order some " + F);
-	 		!searchRestaurant(OrderId);
-	 	}
-	 								  
-		
+		!getLocation();
+		!getStrategy();
+		system.sleep(100);
+		!placeOrders();
+	}
+
 	rule +!getLocation(){
-		int X = math.randomInt()/100000000;
-		int Y = math.randomInt()/100000000;
+		int X = math.randomInt()%100;
+		int Y = math.randomInt()%100;
 		+location(X, Y);
 	    console.println("I am located in ("+ X + ", "+ Y + ").");
 		}
 		
 	rule +!getStrategy(){
-		int S = math.randomInt()/1000000000;
+		int S = math.randomInt()%2;
+		+strategy(S);
 		console.println("Strategy "+S);
 		}
 
-	rule +!searchRestaurant(string OrderId) 
-		: restaurants(list RL){
-		int i = 0;
-		console.println("Searching restaurants for "+OrderId);
-         while (i < prelude.size(RL)) {
-	         send(cfp, prelude.valueAsString(RL, i), orderId(OrderId));
-	         console.println("Sending CFP for "+OrderId+" for "+prelude.valueAsString(RL, i));
-	         i = i + 1;
-         }
+	rule +!placeOrders() 
+		: location(int X, int Y){
+			while(wantToOrder(string OrderId, string F)){
+				-wantToOrder(OrderId, F);
+				console.println("Starting cnp for "+OrderId);
+				!!cnp(OrderId, F, X, Y);
+			}
+		}
+
+	rule +!cnp(string OrderId, string F, int X, int Y) {
+			system.sleep(math.randomInt()%100);
+			!callForRestaurants(OrderId, F, X, Y);
+		}
+
+	rule +!callForRestaurants(string OrderId, string F, int X, int Y) {
+			console.println("Searching restaurants for "+OrderId);
+			df.search(F, list LR);
+			+restaurant_count(OrderId, list_count(LR));
+			console.println(LR);
+			if (LR == ["register"]){
+				console.println("No resturant found for "+OrderId);
+				system.sleep(math.randomInt()%100);
+				query(notFound(int N));
+				-+notFound(N+1);
+				!checkOrdersPlaced();
+
+			} else{
+			send(cfp, LR, sendCFP(OrderId, X, Y));
+			}
+		}
+
+	rule @message(propose, string sender, sendPropose(string OrderId, int Total, double S)) {
+		+proposal(OrderId, sender, Total, S);
+		console.println("Received proposal for "+OrderId+" from "+sender);
+		!call_done(OrderId);
 	}
+
+	rule @message(refuse, string sender, sendRefuse(string OrderId)) {
+		+refusal(OrderId, sender);
+		console.println("Received refusal for "+OrderId+" from "+sender);
+		!call_done(OrderId);
+	}
+
+	rule +!call_done(string OrderId) 
+			:  restaurant_count(OrderId, check.count(proposal(OrderId, string sender, int Total, double S))+check.count(refusal(OrderId, string sender2))) {
+		!chooseRestaurant(OrderId);
+	}
+
+	rule +!call_done(string OrderId) {}
+
+
+	rule +!chooseRestaurant(string OrderId) {
+		string chosen_restaurant = "";
+		query(strategy(int St));
+		query(location(int X, int Y));
+		if (St == 0){
+			int price = 9999;
+			foreach(proposal(OrderId, string sender, int Total, double S)){
+				if (Total < price) {
+					if (chosen_restaurant ~= ""){
+						send(reject-proposal, chosen_restaurant, offer_denied(OrderId, Total));
+						}
+					chosen_restaurant = sender;
+					price = Total;
+				} else {
+					send(reject-proposal, sender, offer_denied(OrderId, Total));
+				}
+			}
+		system.sleep(math.randomInt()%100);
+		send(accept-proposal, chosen_restaurant, offer_accepted(OrderId, price, X, Y));
+		}else{
+			int rate = -1;
+			int price = 9999;
+			foreach(proposal(OrderId, string sender, int Total, double S)){
+				if (S > rate) {
+					if (chosen_restaurant ~= ""){
+						send(reject-proposal, chosen_restaurant, offer_denied(OrderId, Total));
+						}
+					chosen_restaurant = sender;
+					rate = S;
+					price = Total;
+				} else {
+					send(reject-proposal, sender, offer_denied(OrderId, Total));
+				}
+			}
+		console.println("Chosed "+ chosen_restaurant +" for "+OrderId);
+		send(accept-proposal, chosen_restaurant, offer_accepted(OrderId, price, X, Y));
+		}
+		console.println("Placed order for "+OrderId);
+		system.sleep(math.randomInt()%100);
+		query(placed(int P));
+		-+placed(P+1);
+		!checkOrdersPlaced();
+
+	}
+
+	rule +!checkOrdersPlaced()
+		: nOrders(int NO){
+		query(placed(int P));
+		query(notFound(int N));
+		if (P + N == NO){
+			console.println("Placed all my orders!!!");
+			send(inform, "main", placedAll("ok"));
+		}
+	}
+	
 }

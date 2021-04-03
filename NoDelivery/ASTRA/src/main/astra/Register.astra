@@ -1,0 +1,29 @@
+/* Client Class*/
+agent Register {
+
+	/* Modules*/
+	module Df df;
+
+	types registerTypes{
+		formula sendCFP(string, int, int);
+		formula sendRefuse(string);
+	}
+
+	initial !init();
+
+	rule +!init(){
+		df.register("pizza");
+		df.register("hamburger");
+		df.register("burrito");
+		df.register("pastel");
+		df.register("pasta");
+		df.register("sushi");
+		df.register("seafood");
+		df.register("hotdog");
+		df.register("salad");
+		df.register("sfiha");
+	}
+
+	rule @message(cfp, string sender, sendCFP(string OrderId, int X, int Y)) {
+			send(refuse, sender, sendRefuse(OrderId));
+		}

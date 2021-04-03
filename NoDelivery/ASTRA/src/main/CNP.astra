@@ -1,0 +1,100 @@
+agent CNP {
+    module System system;
+    module Console console;
+    module Df df;
+    module Debug debug;
+    module Check check;
+
+    types fr {
+        formula auction(string,funct);
+        formula participant_count(string, int);
+        formula bid(string, string, int);
+        formula offer(string, int);
+        formula no_offer(string);
+        formula no_bid(string, string);
+        formula response(string, int);
+        formula finished(string);
+    }
+
+
+    goal +!cnp(string id, funct task, config(int timeout)) <: finished(id) {
+        body {
+            //console.println("started: " + id);
+            !call_for_bids();!select_winner();
+        }
+
+        goal +!call_for_bids() <: false {
+            body {
+                df.search("participant", list LP);
+                +participant_count(id, list_count(LP));
+                send(cfp, LP, auction(id, task));
+            }
+
+            rule @message(propose, string sender, offer(id, int amt)) {
+                +bid(id, sender, amt);
+                !bidding_done();
+            }
+
+            rule @message(refuse, string sender, no_offer(id)) {
+                +no_bid(id, sender);
+                !bidding_done();
+            }
+
+            rule +!bidding_done() 
+                    :  participant_count(id, check.count(bid(id, string sender, int amt))+check.count(no_bid(id, string sender2))) {
+                done();
+            }
+
+            rule +!bidding_done() {}
+        }
+
+        rule +!select_winner() {
+            string winner = "";
+            int price = -1;
+
+            foreach(bid(id, string sender, int amt)) {
+                if (amt > price) {
+                    if (winner ~= "") send(reject-proposal, winner, offer(id, price));
+                    winner = sender; price = amt;
+                } else {
+                    send(reject-proposal, sender, offer(id, amt));
+                }
+            }
+
+            send(accept-proposal, winner, offer(id, price));
+            //console.println("Finished!");
+            +finished(id);
+        }
+    }
+
+    goal +!monitor_for_cnp_auction() <: false {
+        rule @message(cfp, string sender, auction(string id, funct task)) {
+            !generate_bid(id, task, int amt);
+            if (amt < 0) {
+                send(refuse, sender, no_offer(id));
+            } else {
+                send(propose, sender, offer(id, amt));
+            }
+        }
+
+        rule @message(reject-proposal, string sender, offer(string id, int amt)) {
+            !loser(id, amt);
+        }
+
+        rule @message(accept-proposal, string sender, offer(string id, int amt)) {
+            !winner(id, amt);
+        }
+    }
+
+    rule +!generate_bid(string id, funct task, int amt) {
+        amt = 2;
+    }
+
+    rule +!loser(string id, int amt) {
+       //console.println("I'm a big loser: "+ id + " with: " + amt);
+    }
+
+    rule +!winner(string id, int amt) {
+        //console.println("Everyones (at least me) is a winner babe: " + id + " for:" + amt);
+    }
+}
