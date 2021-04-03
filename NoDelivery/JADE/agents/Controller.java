@@ -14,12 +14,12 @@ import jade.wrapper.ContainerController;
 public class Controller extends Agent {
     ContainerController cc;
     private int nClients = 0;
-    private int allOrdersPlaced = 0;
     private int n;
 
     @Override
     protected void setup() {
         // gets the argument
+        Set<String> placedClientsSet = new HashSet<String>();
         Object[] args = getArguments();
         cc = (ContainerController)args[0];
         
@@ -38,7 +38,7 @@ public class Controller extends Agent {
 
         System.out.println("[controller] Hello, I am the controller");
         try{
-            Thread.sleep(2000);
+            Thread.sleep(100);
         } catch(Exception e){
             System.out.println("[controller] sleep error");
         }
@@ -58,10 +58,10 @@ public class Controller extends Agent {
 
         addBehaviour(new OneShotBehaviour() {
             public void action() {
-                while(allOrdersPlaced < nClients){
+                while(placedClientsSet.size() < nClients){
 
                     try{
-                        Thread.sleep(100);
+                        Thread.sleep(1);
                     } catch(Exception e){
                         System.out.println("[controller] sleep error");
                     }
@@ -76,14 +76,14 @@ public class Controller extends Agent {
                     ACLMessage reply = myAgent.receive(mt);
 
                     if (reply != null) {
-                        allOrdersPlaced++;
+                        placedClientsSet.add(reply.getContent());
                     } else {
                         block();
                     }                                    
                 }
 
                 try{
-                    Thread.sleep(100);
+                    Thread.sleep(1);
                 } catch(Exception e){
                     System.out.println("[controller] sleep error");
                 }

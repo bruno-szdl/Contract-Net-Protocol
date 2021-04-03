@@ -28,6 +28,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	 
 /* ----------------- Initial Goals ----------------- */
 !init. 																			//add the goal chooseFood for each order
+!getSet.
 !getLocation. 																	//get the client's house location
 !getStrategy. 																	//get the order strategy (price or stars)
 !checkPlacedOrders. 															//check if all orders were placed
@@ -44,17 +45,21 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //finished choosing foods to order
 +!init 
-	<- .print("I have finished choosing food."); 									//
+	<- //.print("I have finished choosing food."); 									//
 	   -count(_); 																//clear memory
 	   -typesOfFood(_); 											     		//clear memory
 	   .abolish(food(_,_)).														//clear memory
 	   
++!getSet
+	<- .set.create(PlacedOrdersSet);
+	   +mySet(PlacedOrdersSet).
+
 //get the client's house location
 +!getLocation 
 	:  .random(XClient) &														//random X coordinate
 	   .random(YClient)															//random Y coordinate
-	<- +location(XClient*100, YClient*100); 									//add belief location(X,Y)
-	   .print("Hi, I am a client.\nI live in (", XClient*100, ", ", YClient*100, ").").				//
+	<- //.print("Hi, I am a client.\nI live in (", XClient*100, ", ", YClient*100, ").");				//
+	  +location(XClient*100, YClient*100). 									//add belief location(X,Y)
 	   
 //get the order strategy (price or stars)
 +!getStrategy 
@@ -71,13 +76,13 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
        .my_name(A)																//get client's name
     <- .concat(A, ".Order_", X, ".", F, OrderId); 							//generate OrderId
        +wantToEat(OrderId);  													//add belief of what the client wants to eat
-       .print("I want to eat some ", F,"."); 									//
+       //.print("I want to eat some ", F,"."); 									//
        !searchRestaurant(OrderId, F).											//add the goal to search restaurants
 	   
 //checking all available restaurants for the type of food
 +!searchRestaurant(OrderId, F)
 	:  location(XClient,YClient)												//given location of the client
-	<- .wait(1); 																//wait for restaurants to register
+	<- .wait(100); 																//wait for restaurants to register
 	   .df_search(F ,LR); 														//search all restaurants that serve that kind of food
 	   //.print("Searching ",F," restaurants..."); 								//
 	   .send(LR, tell, order(OrderId, XClient, YClient)); 						//send order for all restaurants that serve that kind of food
@@ -108,18 +113,19 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //no restaurant found
 +!chooseRestaurantByPrice(OrderId)												//if the list is empty, there is no restaurant that serves this kind of food nearby
-    <- .print("No restaurant for ", OrderId," nearby."); 						//
+    : mySet(Set)
+	<- //.print("No restaurant for ", OrderId," nearby."); 						//
 	   .abolish(refuse(OrderId)); 												//clear memory
 	   .abolish(propose(OrderId,_,_,_,_));										//clear memory
        -wantToEat(OrderId);														//clear memory	
 	   +noRestaurant(OrderId);													//add the belief that there is no resturant for this kind of food
-	   +placedOrder(OrderId).														//update placed orders (the client did not find a restaurant, but you have to count it)
+	   .set.add(Set, OrderId).														//update placed orders (the client did not find a restaurant, but you have to count it)
 	   
 //choosing best rated restaurant
 +!chooseRestaurantByStar(OrderId) 
 	:  .findall(offer(S, A), propose(OrderId, _, S)[source(A)], L) &      //put all offers into a list
 	   L \== []																	//if the list is not empty
-	<- .print("Rates for ", OrderId, " are ", L,".");							//
+	<- //.print("Rates for ", OrderId, " are ", L,".");							//
 	   .max(L, offer(WOf,WAg));													//find the best rated restaurant
 	   //.print("[",WAg,"] The best rated restaurant for ",OrderId," is ",WAg," with ",WOf, " stars."); //
 	   +choose(OrderId, WAg);													//add the belief of indicating chosen restaurant for the roder
@@ -129,12 +135,13 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //no restaurant found
 +!chooseRestaurantByStar(OrderId) 												//if the list is empty, there is no restaurant that serves this kind of food nearby
-    <- .print("No restaurant for ", OrderId," nearby.");  						//
+    : mySet(Set)
+	<- //.print("No restaurant for ", OrderId," nearby.");  						//
 	   .abolish(refuse(OrderId)); 												//clear memory
 	   .abolish(propose(OrderId,_,_,_,_));										//clear memory
        -wantToEat(OrderId);														//clear memory	
 	   +noRestaurant(OrderId);													//add the belief that there is no resturant for this kind of food
-	   +placedOrder(OrderId).													//update placed orders (the client did not find a restaurant, but you have to count it)
+	   .set.add(Set, OrderId).													//update placed orders (the client did not find a restaurant, but you have to count it)
 
 //confirm order to the chosen restaurant
 +!answerRestaurants(OrderId, [offer(_,WAg)|T], WAg) 
@@ -154,8 +161,9 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 
 //restaurant has confirmed the order and it's preparing the food
 +inform_preparing(OrderId)[source(A)]
+	: mySet(Set)
 	<- //.print("[",A,"] is preparing the Order: ", OrderId, ".");				//
-	   +placedOrder(OrderId);													//update placed orders
+	   .set.add(Set, OrderId);													//update placed orders
 	   !rate(OrderId, A).
 
 //restaurant has confirmed the cancellation of the order
@@ -174,7 +182,8 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 //all the orders have finished
 +!checkPlacedOrders
 	:  nOrders(NO) &															//given number of orders
-	   .count(placedOrder(_), N) &
+	   mySet(Set) &
+	   .length(Set, N) &
 	   N == NO	
 	<- .print(" ---------------------------- Placed all my orders ---------------------------- "); //
 		+allOrdersPlaced;

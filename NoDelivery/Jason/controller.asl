@@ -24,8 +24,8 @@ allClientsWaiting(NC) :- .count(allOrdersPlaced[source(_)], NF) &								//all c
 	: nClients(NC) &															//given number of clients
 	  allClientsWaiting(NC)														//if all clients are waiting for their orders
 	<- .print(" ------------------------ CNP 1 COMPLETED ------------------------ ");
-	   -+cnp1(true).
-	   //.stopMAS.
+	   -+cnp1(true);
+	   .stopMAS.
 	
 //if not
 +!checkAllClientsWaiting 

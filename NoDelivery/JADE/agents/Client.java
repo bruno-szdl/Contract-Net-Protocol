@@ -24,7 +24,6 @@ enum Steps{
 public class Client extends Agent {
     private int myNumber = -1;
     private int nCNPs = 3;          
-    private int CNPended = 0;
     private int nContracts = 0;
     public int X = 0;
     public int Y = 0;
@@ -33,6 +32,7 @@ public class Client extends Agent {
     @Override
     protected void setup() {
         // gets the argument
+        Set<String> placedOrdersSet = new HashSet<String>();
         Object[] args = getArguments();
         myNumber = Integer.valueOf(args[0].toString());
         nCNPs = Integer.valueOf(args[1].toString());
@@ -114,16 +114,16 @@ public class Client extends Agent {
                 try {
                     DFAgentDescription[] result = DFService.search(myAgent, template); 
                     if(result.length > 0){
-                        System.out.println("[client"+myNumber+"][Order"+OrderId+"] Found the following "+wantToEat+" restaurants:");
+                        //System.out.println("[client"+myNumber+"][Order"+OrderId+"] Found the following "+wantToEat+" restaurants:");
                         possibleRestaurants = new AID[result.length];
                         for (int i = 0; i < result.length; ++i) {
                             possibleRestaurants[i] = result[i].getName();
-                            System.out.println("\t\t  -> " + possibleRestaurants[i].getName());
+                            //System.out.println("\t\t  -> " + possibleRestaurants[i].getName());
                         }   
                         step = Steps.CFP;                         
                     }
                     else{
-                        System.out.println("[client"+myNumber+"][Order"+OrderId+"] No " + wantToEat +" restaurants found.");
+                        //System.out.println("[client"+myNumber+"][Order"+OrderId+"] No " + wantToEat +" restaurants found.");
                         this.notFound = true;
                     }
                     
@@ -147,7 +147,7 @@ public class Client extends Agent {
                 cfp.setConversationId("contract");
                 cfp.setReplyWith("cfp" + System.currentTimeMillis());
                 myAgent.send(cfp);
-                System.out.println("[client"+myNumber+"][Order"+OrderId+"] Sending CFP...");
+                //System.out.println("[client"+myNumber+"][Order"+OrderId+"] Sending CFP...");
                 mt = MessageTemplate.and(MessageTemplate.MatchConversationId("contract"),
                                         MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
                 step = Steps.OFFERS;
@@ -189,7 +189,7 @@ public class Client extends Agent {
                 order.setConversationId("contract");
                 order.setReplyWith("order" + System.currentTimeMillis());
                 myAgent.send(order);
-                System.out.println("[client"+myNumber+"][Order"+OrderId+"] Ordering " +wantToEat+ " from " +chosenRestaurant+".");
+                //System.out.println("[client"+myNumber+"][Order"+OrderId+"] Ordering " +wantToEat+ " from " +chosenRestaurant+".");
                 // Prepare the template to get the purchase order reply
                 mt = MessageTemplate.and(MessageTemplate.MatchConversationId("contract"),
                                         MessageTemplate.MatchInReplyTo(order.getReplyWith()));
@@ -201,9 +201,9 @@ public class Client extends Agent {
                 if (reply != null) {
                     if (reply.getPerformative() == ACLMessage.INFORM) {
                         if (strategy == 0){
-                            System.out.println("[client"+myNumber+"][Order"+OrderId+"] Successfully ordered a " + wantToEat + " from " + reply.getSender().getName() + "for " + lowerPrice + "$\n");
+                           // System.out.println("[client"+myNumber+"][Order"+OrderId+"] Successfully ordered a " + wantToEat + " from " + reply.getSender().getName() + "for " + lowerPrice + "$\n");
                         } else {
-                            System.out.println("[client"+myNumber+"][Order"+OrderId+"] Successfully ordered a " + wantToEat + " from " + reply.getSender().getName() + "with " + higherRate + " Stars\n"); 
+                            //System.out.println("[client"+myNumber+"][Order"+OrderId+"] Successfully ordered a " + wantToEat + " from " + reply.getSender().getName() + "with " + higherRate + " Stars\n"); 
                         }
                     }else {
                         System.out.println("Failure");
@@ -219,8 +219,8 @@ public class Client extends Agent {
         public boolean done() {
             if((step == Steps.START && this.notFound) || (step == Steps.ANSWER && chosenRestaurant == null)){
                 try{
-                    CNPended++;
-                    if(CNPended == nCNPs){
+                    placedOrdersSet.add(OrderId);
+                    if(placedOrdersSet.size() == nCNPs){
     
                         ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 
@@ -254,8 +254,8 @@ public class Client extends Agent {
 
             else if(step == Steps.END){
                 try{
-                    CNPended++;
-                    if(CNPended == nCNPs){
+                    placedOrdersSet.add(OrderId);
+                    if(placedOrdersSet.size() == nCNPs){
     
                         ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 
@@ -272,7 +272,7 @@ public class Client extends Agent {
                         } 
 
                         msg.addReceiver(controller);
-                        msg.setContent("Ending");
+                        msg.setContent(OrderId);
                         msg.setConversationId("END");
                         myAgent.send(msg);
                     }
