@@ -108,7 +108,7 @@ public class Controller extends ASTRAClass {
 				)
 			),
 			new Block(
-				"Controller", new int[] {53,24,74,5},
+				"Controller", new int[] {53,24,75,5},
 				new Statement[] {
 					new ModuleCall("console",
 						"Controller", new int[] {54,12,54,42},
@@ -141,11 +141,11 @@ public class Controller extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "X"),
-						"Controller", new int[] {55,12,74,5},
+						"Controller", new int[] {55,12,75,5},
 						Primitive.newPrimitive(1)
 					),
 					new While(
-						"Controller", new int[] {56,12,74,5},
+						"Controller", new int[] {56,12,75,5},
 						new Comparison("<=",
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "D")
@@ -209,22 +209,39 @@ public class Controller extends ASTRAClass {
 							}
 						)
 					),
+					new ModuleCall("system",
+						"Controller", new int[] {61,12,61,28},
+						new Predicate("sleep", new Term[] {
+							Primitive.newPrimitive(100)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.System) intention.getModule("Controller","system")).sleep(
+									(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					),
 					new Assignment(
 						new Variable(Type.INTEGER, "X"),
-						"Controller", new int[] {61,12,74,5},
+						"Controller", new int[] {62,12,75,5},
 						Primitive.newPrimitive(1)
 					),
 					new While(
-						"Controller", new int[] {62,12,74,5},
+						"Controller", new int[] {63,12,75,5},
 						new Comparison("<=",
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "R")
 						),
 						new Block(
-							"Controller", new int[] {62,26,66,13},
+							"Controller", new int[] {63,26,67,13},
 							new Statement[] {
 								new ModuleCall("system",
-									"Controller", new int[] {63,16,63,65},
+									"Controller", new int[] {64,16,64,65},
 									new Predicate("createAgent", new Term[] {
 										Operator.newOperator('+',
 											Primitive.newPrimitive("restaurant_"),
@@ -246,7 +263,7 @@ public class Controller extends ASTRAClass {
 									}
 								),
 								new ModuleCall("console",
-									"Controller", new int[] {64,16,64,65},
+									"Controller", new int[] {65,16,65,65},
 									new Predicate("println", new Term[] {
 										Operator.newOperator('+',
 											Primitive.newPrimitive("Created restaurant_"),
@@ -270,7 +287,7 @@ public class Controller extends ASTRAClass {
 								),
 								new Assignment(
 									new Variable(Type.INTEGER, "X"),
-									"Controller", new int[] {65,16,66,13},
+									"Controller", new int[] {66,16,67,13},
 									Operator.newOperator('+',
 										new Variable(Type.INTEGER, "X"),
 										Primitive.newPrimitive(1)
@@ -280,7 +297,7 @@ public class Controller extends ASTRAClass {
 						)
 					),
 					new ModuleCall("system",
-						"Controller", new int[] {67,12,67,28},
+						"Controller", new int[] {68,12,68,28},
 						new Predicate("sleep", new Term[] {
 							Primitive.newPrimitive(100)
 						}),
@@ -298,20 +315,20 @@ public class Controller extends ASTRAClass {
 					),
 					new Assignment(
 						new Variable(Type.INTEGER, "X"),
-						"Controller", new int[] {68,12,74,5},
+						"Controller", new int[] {69,12,75,5},
 						Primitive.newPrimitive(1)
 					),
 					new While(
-						"Controller", new int[] {69,12,74,5},
+						"Controller", new int[] {70,12,75,5},
 						new Comparison("<=",
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "C")
 						),
 						new Block(
-							"Controller", new int[] {69,26,73,9},
+							"Controller", new int[] {70,26,74,9},
 							new Statement[] {
 								new ModuleCall("system",
-									"Controller", new int[] {70,16,70,57},
+									"Controller", new int[] {71,16,71,57},
 									new Predicate("createAgent", new Term[] {
 										Operator.newOperator('+',
 											Primitive.newPrimitive("client_"),
@@ -333,7 +350,7 @@ public class Controller extends ASTRAClass {
 									}
 								),
 								new ModuleCall("console",
-									"Controller", new int[] {71,16,71,61},
+									"Controller", new int[] {72,16,72,61},
 									new Predicate("println", new Term[] {
 										Operator.newOperator('+',
 											Primitive.newPrimitive("Created client_"),
@@ -357,7 +374,7 @@ public class Controller extends ASTRAClass {
 								),
 								new Assignment(
 									new Variable(Type.INTEGER, "X"),
-									"Controller", new int[] {72,16,73,9},
+									"Controller", new int[] {73,16,74,9},
 									Operator.newOperator('+',
 										new Variable(Type.INTEGER, "X"),
 										Primitive.newPrimitive(1)
@@ -370,7 +387,7 @@ public class Controller extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Controller", new int[] {76,9,76,62},
+			"Controller", new int[] {77,9,77,62},
 			new MessageEvent(
 				new Performative("inform"),
 				new Variable(Type.STRING, "sender",false),
@@ -380,10 +397,10 @@ public class Controller extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Controller", new int[] {76,61,79,5},
+				"Controller", new int[] {77,61,80,5},
 				new Statement[] {
 					new ModuleCall("console",
-						"Controller", new int[] {77,8,77,79},
+						"Controller", new int[] {78,8,78,79},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("---------------------- Received placed from "),
@@ -403,7 +420,7 @@ public class Controller extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('+',
-						"Controller", new int[] {78,8,79,5},
+						"Controller", new int[] {79,8,80,5},
 						new Predicate("nClientsPlaced", new Term[] {
 							new Variable(Type.STRING, "sender")
 						})
@@ -412,7 +429,7 @@ public class Controller extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Controller", new int[] {81,9,82,27},
+			"Controller", new int[] {82,9,83,27},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("checkAllClientsPlaced", new Term[] {})
@@ -422,11 +439,11 @@ public class Controller extends ASTRAClass {
 				new Variable(Type.INTEGER, "NC",false)
 			}),
 			new Block(
-				"Controller", new int[] {82,26,93,5},
+				"Controller", new int[] {83,26,94,5},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.INTEGER, "NCP"),
-						"Controller", new int[] {83,8,93,5},
+						"Controller", new int[] {84,8,94,5},
 						new ModuleTerm("check", Type.INTEGER,
 							new Predicate("count", new Term[] {
 								new Funct("nClientsPlaced", new Term[] {
@@ -448,10 +465,10 @@ public class Controller extends ASTRAClass {
 						)
 					),
 					new ModuleCall("console",
-						"Controller", new int[] {85,8,85,37},
+						"Controller", new int[] {86,8,86,37},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
-								Primitive.newPrimitive("NCP "),
+								Primitive.newPrimitive("nCP "),
 								new Variable(Type.INTEGER, "NCP")
 							)
 						}),
@@ -468,16 +485,16 @@ public class Controller extends ASTRAClass {
 						}
 					),
 					new If(
-						"Controller", new int[] {86,8,93,5},
+						"Controller", new int[] {87,8,94,5},
 						new Comparison("==",
 							new Variable(Type.INTEGER, "NC"),
 							new Variable(Type.INTEGER, "NCP")
 						),
 						new Block(
-							"Controller", new int[] {86,22,89,9},
+							"Controller", new int[] {87,22,90,9},
 							new Statement[] {
 								new ModuleCall("console",
-									"Controller", new int[] {87,12,87,84},
+									"Controller", new int[] {88,12,88,84},
 									new Predicate("println", new Term[] {
 										Primitive.newPrimitive("---------------------- CNP 1 ------------------------")
 									}),
@@ -494,7 +511,7 @@ public class Controller extends ASTRAClass {
 									}
 								),
 								new Subgoal(
-									"Controller", new int[] {88,12,89,9},
+									"Controller", new int[] {89,12,90,9},
 									new Goal(
 										new Predicate("checkAllClientsFinished", new Term[] {})
 									)
@@ -502,10 +519,10 @@ public class Controller extends ASTRAClass {
 							}
 						),
 						new Block(
-							"Controller", new int[] {89,15,93,5},
+							"Controller", new int[] {90,15,94,5},
 							new Statement[] {
 								new ModuleCall("system",
-									"Controller", new int[] {90,12,90,26},
+									"Controller", new int[] {91,12,91,26},
 									new Predicate("sleep", new Term[] {
 										Primitive.newPrimitive(1)
 									}),
@@ -522,7 +539,7 @@ public class Controller extends ASTRAClass {
 									}
 								),
 								new Subgoal(
-									"Controller", new int[] {91,12,92,9},
+									"Controller", new int[] {92,12,93,9},
 									new Goal(
 										new Predicate("checkAllClientsPlaced", new Term[] {})
 									)
@@ -534,7 +551,7 @@ public class Controller extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Controller", new int[] {95,9,95,64},
+			"Controller", new int[] {96,9,96,64},
 			new MessageEvent(
 				new Performative("inform"),
 				new Variable(Type.STRING, "sender",false),
@@ -544,10 +561,10 @@ public class Controller extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Controller", new int[] {95,63,98,5},
+				"Controller", new int[] {96,63,99,5},
 				new Statement[] {
 					new ModuleCall("console",
-						"Controller", new int[] {96,8,96,81},
+						"Controller", new int[] {97,8,97,81},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("---------------------- Received finished from "),
@@ -567,7 +584,7 @@ public class Controller extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('+',
-						"Controller", new int[] {97,8,98,5},
+						"Controller", new int[] {98,8,99,5},
 						new Predicate("nClientsFinished", new Term[] {
 							new Variable(Type.STRING, "sender")
 						})
@@ -576,7 +593,7 @@ public class Controller extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Controller", new int[] {100,9,101,27},
+			"Controller", new int[] {101,9,102,27},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("checkAllClientsFinished", new Term[] {})
@@ -586,11 +603,11 @@ public class Controller extends ASTRAClass {
 				new Variable(Type.INTEGER, "NC",false)
 			}),
 			new Block(
-				"Controller", new int[] {101,26,112,5},
+				"Controller", new int[] {102,26,113,5},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.INTEGER, "NCF"),
-						"Controller", new int[] {102,8,112,5},
+						"Controller", new int[] {103,8,113,5},
 						new ModuleTerm("check", Type.INTEGER,
 							new Predicate("count", new Term[] {
 								new Funct("nClientsFinished", new Term[] {
@@ -612,10 +629,10 @@ public class Controller extends ASTRAClass {
 						)
 					),
 					new ModuleCall("console",
-						"Controller", new int[] {104,8,104,37},
+						"Controller", new int[] {105,8,105,37},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
-								Primitive.newPrimitive("NCF "),
+								Primitive.newPrimitive("nCF "),
 								new Variable(Type.INTEGER, "NCF")
 							)
 						}),
@@ -632,16 +649,16 @@ public class Controller extends ASTRAClass {
 						}
 					),
 					new If(
-						"Controller", new int[] {105,8,112,5},
+						"Controller", new int[] {106,8,113,5},
 						new Comparison("==",
 							new Variable(Type.INTEGER, "NC"),
 							new Variable(Type.INTEGER, "NCF")
 						),
 						new Block(
-							"Controller", new int[] {105,22,108,9},
+							"Controller", new int[] {106,22,109,9},
 							new Statement[] {
 								new ModuleCall("console",
-									"Controller", new int[] {106,12,106,84},
+									"Controller", new int[] {107,12,107,84},
 									new Predicate("println", new Term[] {
 										Primitive.newPrimitive("---------------------- CNP 2 ------------------------")
 									}),
@@ -658,7 +675,7 @@ public class Controller extends ASTRAClass {
 									}
 								),
 								new ModuleCall("system",
-									"Controller", new int[] {107,12,107,25},
+									"Controller", new int[] {108,12,108,25},
 									new Predicate("exit", new Term[] {}),
 									new DefaultModuleCallAdaptor() {
 										public boolean inline() {
@@ -674,10 +691,10 @@ public class Controller extends ASTRAClass {
 							}
 						),
 						new Block(
-							"Controller", new int[] {108,15,112,5},
+							"Controller", new int[] {109,15,113,5},
 							new Statement[] {
 								new ModuleCall("system",
-									"Controller", new int[] {109,12,109,28},
+									"Controller", new int[] {110,12,110,28},
 									new Predicate("sleep", new Term[] {
 										Primitive.newPrimitive(100)
 									}),
@@ -694,7 +711,7 @@ public class Controller extends ASTRAClass {
 									}
 								),
 								new Subgoal(
-									"Controller", new int[] {110,12,111,9},
+									"Controller", new int[] {111,12,112,9},
 									new Goal(
 										new Predicate("checkAllClientsFinished", new Term[] {})
 									)
@@ -720,7 +737,7 @@ public class Controller extends ASTRAClass {
 		);
 		agent.initialize(
 			new Predicate("nDeliveryMen", new Term[] {
-				Primitive.newPrimitive(10)
+				Primitive.newPrimitive(25)
 			})
 		);
 		agent.initialize(

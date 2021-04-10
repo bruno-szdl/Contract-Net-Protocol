@@ -19,7 +19,7 @@ public class Restaurant extends ASTRAClass {
 	public Restaurant() {
 		setParents(new Class[] {astra.lang.Agent.class});
 		addRule(new Rule(
-			"Restaurant", new int[] {70,9,70,39},
+			"Restaurant", new int[] {72,9,72,39},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("init", new Term[] {})
@@ -29,11 +29,11 @@ public class Restaurant extends ASTRAClass {
 				new Variable(Type.INTEGER, "T",false)
 			}),
 			new Block(
-				"Restaurant", new int[] {70,38,87,9},
+				"Restaurant", new int[] {72,38,91,9},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.STRING, "Name"),
-						"Restaurant", new int[] {71,8,87,9},
+						"Restaurant", new int[] {73,8,91,9},
 						new ModuleTerm("system", Type.STRING,
 							new Predicate("name", new Term[] {}),
 							new ModuleTermAdaptor() {
@@ -49,13 +49,13 @@ public class Restaurant extends ASTRAClass {
 						)
 					),
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {72,8,87,9},
+						"Restaurant", new int[] {74,8,91,9},
 						new Predicate("name", new Term[] {
 							new Variable(Type.STRING, "Name")
 						})
 					),
 					new ModuleCall("console",
-						"Restaurant", new int[] {73,8,73,43},
+						"Restaurant", new int[] {75,8,75,43},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("Hi, I am "),
@@ -76,7 +76,7 @@ public class Restaurant extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "R"),
-						"Restaurant", new int[] {74,8,87,9},
+						"Restaurant", new int[] {76,8,91,9},
 						Operator.newOperator('%',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("randomInt", new Term[] {}),
@@ -95,7 +95,7 @@ public class Restaurant extends ASTRAClass {
 						)
 					),
 					new Query(
-						"Restaurant", new int[] {75,8,75,60},
+						"Restaurant", new int[] {77,8,77,60},
 						new Predicate("food", new Term[] {
 							new Variable(Type.INTEGER, "R"),
 							new Variable(Type.STRING, "F",false),
@@ -104,7 +104,7 @@ public class Restaurant extends ASTRAClass {
 						})
 					),
 					new ModuleCall("df",
-						"Restaurant", new int[] {76,8,76,22},
+						"Restaurant", new int[] {78,8,78,22},
 						new Predicate("register", new Term[] {
 							new Variable(Type.STRING, "F")
 						}),
@@ -122,7 +122,7 @@ public class Restaurant extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "P"),
-						"Restaurant", new int[] {77,8,87,9},
+						"Restaurant", new int[] {79,8,91,9},
 						Operator.newOperator('/',
 							new Brackets(
 								Operator.newOperator('*',
@@ -162,7 +162,7 @@ public class Restaurant extends ASTRAClass {
 						)
 					),
 					new ModuleCall("console",
-						"Restaurant", new int[] {78,9,78,61},
+						"Restaurant", new int[] {80,9,80,61},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("I serve "),
@@ -191,62 +191,89 @@ public class Restaurant extends ASTRAClass {
 						}
 					),
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {79,9,87,9},
+						"Restaurant", new int[] {81,9,91,9},
 						new Predicate("price", new Term[] {
 							new Variable(Type.INTEGER, "P")
 						})
 					),
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {80,9,87,9},
+						"Restaurant", new int[] {82,9,91,9},
 						new Predicate("serve", new Term[] {
 							new Variable(Type.STRING, "F")
 						})
 					),
 					new BeliefUpdate('-',
-						"Restaurant", new int[] {81,8,87,9},
+						"Restaurant", new int[] {83,8,91,9},
 						new Predicate("typesOfFood", new Term[] {
 							new Variable(Type.INTEGER, "T")
 						})
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "X"),
-						"Restaurant", new int[] {82,8,87,9},
+						"Restaurant", new int[] {84,8,91,9},
 						Primitive.newPrimitive(0)
 					),
 					new While(
-						"Restaurant", new int[] {83,8,87,9},
-						new Comparison("<",
-							new Variable(Type.INTEGER, "X"),
-							new Variable(Type.INTEGER, "T")
-						),
+						"Restaurant", new int[] {85,8,91,9},
+						new Predicate("food", new Term[] {
+							new Variable(Type.INTEGER, "Y",false),
+							new Variable(Type.STRING, "S",false),
+							new Variable(Type.INTEGER, "I",false),
+							new Variable(Type.INTEGER, "J",false)
+						}),
 						new Block(
-							"Restaurant", new int[] {83,20,86,13},
+							"Restaurant", new int[] {85,50,87,9},
 							new Statement[] {
 								new BeliefUpdate('-',
-									"Restaurant", new int[] {84,12,86,13},
+									"Restaurant", new int[] {86,12,87,9},
 									new Predicate("food", new Term[] {
-										new Variable(Type.INTEGER, "X"),
-										new Variable(Type.STRING, "S",false),
-										new Variable(Type.INTEGER, "I",false),
-										new Variable(Type.INTEGER, "J",false)
+										new Variable(Type.INTEGER, "Y"),
+										new Variable(Type.STRING, "S"),
+										new Variable(Type.INTEGER, "I"),
+										new Variable(Type.INTEGER, "J")
 									})
-								),
-								new Assignment(
-									new Variable(Type.INTEGER, "X"),
-									"Restaurant", new int[] {85,12,86,13},
-									Operator.newOperator('+',
-										new Variable(Type.INTEGER, "X"),
-										Primitive.newPrimitive(1)
-									)
 								)
 							}
 						)
+					),
+					new ModuleCall("df",
+						"Restaurant", new int[] {88,8,88,41},
+						new Predicate("search", new Term[] {
+							Primitive.newPrimitive("deliveryman"),
+							new Variable(Type.LIST, "LD",false)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((Df) intention.getModule("Restaurant","df")).search(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0)),
+									(ActionParam<astra.term.ListTerm>) intention.evaluate(predicate.getTerm(1))
+								);
+							}
+						}
+					),
+					new BeliefUpdate('+',
+						"Restaurant", new int[] {89,8,91,9},
+						new Predicate("deliveryman_list", new Term[] {
+							new Variable(Type.LIST, "LD")
+						})
+					),
+					new BeliefUpdate('+',
+						"Restaurant", new int[] {90,8,91,9},
+						new Predicate("delivery_man_count", new Term[] {
+							new Count(
+								new Variable(Type.LIST, "LD")
+							)
+						})
 					)
 				}
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {89,9,89,25},
+			"Restaurant", new int[] {93,9,93,25},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("getLocation", new Term[] {})
@@ -254,11 +281,11 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {89,24,97,9},
+				"Restaurant", new int[] {93,24,101,9},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.INTEGER, "X"),
-						"Restaurant", new int[] {90,8,97,9},
+						"Restaurant", new int[] {94,8,101,9},
 						Operator.newOperator('%',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("randomInt", new Term[] {}),
@@ -278,7 +305,7 @@ public class Restaurant extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "Y"),
-						"Restaurant", new int[] {91,8,97,9},
+						"Restaurant", new int[] {95,8,101,9},
 						Operator.newOperator('%',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("randomInt", new Term[] {}),
@@ -298,7 +325,7 @@ public class Restaurant extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "R"),
-						"Restaurant", new int[] {92,8,97,9},
+						"Restaurant", new int[] {96,8,101,9},
 						Operator.newOperator('%',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("randomInt", new Term[] {}),
@@ -318,7 +345,7 @@ public class Restaurant extends ASTRAClass {
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "Radius"),
-						"Restaurant", new int[] {93,8,97,9},
+						"Restaurant", new int[] {97,8,101,9},
 						Operator.newOperator('*',
 							Operator.newOperator('-',
 								Primitive.newPrimitive(80),
@@ -328,20 +355,20 @@ public class Restaurant extends ASTRAClass {
 						)
 					),
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {94,8,97,9},
+						"Restaurant", new int[] {98,8,101,9},
 						new Predicate("location", new Term[] {
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "Y")
 						})
 					),
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {95,8,97,9},
+						"Restaurant", new int[] {99,8,101,9},
 						new Predicate("radius", new Term[] {
 							new Variable(Type.INTEGER, "Radius")
 						})
 					),
 					new ModuleCall("console",
-						"Restaurant", new int[] {96,8,96,99},
+						"Restaurant", new int[] {100,8,100,99},
 						new Predicate("println", new Term[] {
 							Operator.newOperator('+',
 								Primitive.newPrimitive("I am located in ("),
@@ -379,7 +406,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {99,9,99,21},
+			"Restaurant", new int[] {103,9,103,21},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("getRate", new Term[] {})
@@ -387,15 +414,15 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {99,20,102,9},
+				"Restaurant", new int[] {103,20,106,9},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.DOUBLE, "S"),
-						"Restaurant", new int[] {100,8,102,9},
+						"Restaurant", new int[] {104,8,106,9},
 						Primitive.newPrimitive(5.0)
 					),
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {101,8,102,9},
+						"Restaurant", new int[] {105,8,106,9},
 						new Predicate("rate", new Term[] {
 							new Variable(Type.DOUBLE, "S")
 						})
@@ -404,7 +431,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {106,9,106,78},
+			"Restaurant", new int[] {110,9,110,78},
 			new MessageEvent(
 				new Performative("cfp"),
 				new Variable(Type.STRING, "sender",false),
@@ -416,36 +443,36 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {106,77,121,9},
+				"Restaurant", new int[] {110,77,125,9},
 				new Statement[] {
 					new Query(
-						"Restaurant", new int[] {107,8,107,39},
+						"Restaurant", new int[] {111,8,111,39},
 						new Predicate("location", new Term[] {
 							new Variable(Type.INTEGER, "XR",false),
 							new Variable(Type.INTEGER, "YR",false)
 						})
 					),
 					new Query(
-						"Restaurant", new int[] {108,8,108,29},
+						"Restaurant", new int[] {112,8,112,29},
 						new Predicate("radius", new Term[] {
 							new Variable(Type.INTEGER, "Rd",false)
 						})
 					),
 					new Query(
-						"Restaurant", new int[] {109,8,109,27},
+						"Restaurant", new int[] {113,8,113,27},
 						new Predicate("price", new Term[] {
 							new Variable(Type.INTEGER, "P",false)
 						})
 					),
 					new Query(
-						"Restaurant", new int[] {110,8,110,29},
+						"Restaurant", new int[] {114,8,114,29},
 						new Predicate("rate", new Term[] {
 							new Variable(Type.DOUBLE, "S",false)
 						})
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "distance"),
-						"Restaurant", new int[] {111,8,121,9},
+						"Restaurant", new int[] {115,8,125,9},
 						Operator.newOperator('+',
 							new ModuleTerm("math", Type.INTEGER,
 								new Predicate("abs", new Term[] {
@@ -490,17 +517,17 @@ public class Restaurant extends ASTRAClass {
 						)
 					),
 					new If(
-						"Restaurant", new int[] {112,8,121,9},
+						"Restaurant", new int[] {116,8,125,9},
 						new Comparison("<",
 							new Variable(Type.INTEGER, "distance"),
 							new Variable(Type.INTEGER, "Rd")
 						),
 						new Block(
-							"Restaurant", new int[] {112,26,117,9},
+							"Restaurant", new int[] {116,26,121,9},
 							new Statement[] {
 								new Declaration(
 									new Variable(Type.INTEGER, "Total"),
-									"Restaurant", new int[] {113,12,117,9},
+									"Restaurant", new int[] {117,12,121,9},
 									Operator.newOperator('/',
 										new Variable(Type.INTEGER, "distance"),
 										Operator.newOperator('+',
@@ -509,7 +536,39 @@ public class Restaurant extends ASTRAClass {
 										)
 									)
 								),
-								new Send("Restaurant", new int[] {116,12,116,65},
+								new ModuleCall("system",
+									"Restaurant", new int[] {119,12,119,44},
+									new Predicate("sleep", new Term[] {
+										Operator.newOperator('%',
+											new ModuleTerm("math", Type.INTEGER,
+												new Predicate("randomInt", new Term[] {}),
+												new ModuleTermAdaptor() {
+													public Object invoke(Intention intention, Predicate predicate) {
+														return ((astra.lang.Math) intention.getModule("Restaurant","math")).randomInt(
+														);
+													}
+													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+														return ((astra.lang.Math) visitor.agent().getModule("Restaurant","math")).randomInt(
+														);
+													}
+												}
+											),
+											Primitive.newPrimitive(10)
+										)
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return false;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								),
+								new Send("Restaurant", new int[] {120,12,120,65},
 									new Performative("propose"),
 									new Variable(Type.STRING, "sender"),
 									new Predicate("sendPropose", new Term[] {
@@ -521,9 +580,41 @@ public class Restaurant extends ASTRAClass {
 							}
 						),
 						new Block(
-							"Restaurant", new int[] {117,14,121,9},
+							"Restaurant", new int[] {121,14,125,9},
 							new Statement[] {
-								new Send("Restaurant", new int[] {119,12,119,53},
+								new ModuleCall("system",
+									"Restaurant", new int[] {122,12,122,44},
+									new Predicate("sleep", new Term[] {
+										Operator.newOperator('%',
+											new ModuleTerm("math", Type.INTEGER,
+												new Predicate("randomInt", new Term[] {}),
+												new ModuleTermAdaptor() {
+													public Object invoke(Intention intention, Predicate predicate) {
+														return ((astra.lang.Math) intention.getModule("Restaurant","math")).randomInt(
+														);
+													}
+													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+														return ((astra.lang.Math) visitor.agent().getModule("Restaurant","math")).randomInt(
+														);
+													}
+												}
+											),
+											Primitive.newPrimitive(10)
+										)
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return false;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								),
+								new Send("Restaurant", new int[] {123,12,123,53},
 									new Performative("refuse"),
 									new Variable(Type.STRING, "sender"),
 									new Predicate("sendRefuse", new Term[] {
@@ -537,7 +628,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {123,9,123,92},
+			"Restaurant", new int[] {127,9,127,92},
 			new MessageEvent(
 				new Performative("reject-proposal"),
 				new Variable(Type.STRING, "sender",false),
@@ -548,9 +639,9 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {123,91,125,5},
+				"Restaurant", new int[] {127,91,129,5},
 				new Statement[] {
-					new Send("Restaurant", new int[] {124,8,124,40},
+					new Send("Restaurant", new int[] {128,8,128,40},
 						new Performative("inform"),
 						new Variable(Type.STRING, "sender"),
 						new Predicate("tell", new Term[] {
@@ -561,7 +652,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {127,9,127,108},
+			"Restaurant", new int[] {131,9,131,108},
 			new MessageEvent(
 				new Performative("accept-proposal"),
 				new Variable(Type.STRING, "sender",false),
@@ -574,16 +665,16 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {127,107,133,5},
+				"Restaurant", new int[] {131,107,137,5},
 				new Statement[] {
 					new Query(
-						"Restaurant", new int[] {129,8,129,27},
+						"Restaurant", new int[] {133,8,133,27},
 						new Predicate("sells", new Term[] {
 							new Variable(Type.INTEGER, "S",false)
 						})
 					),
 					new SpecialBeliefUpdate(
-						"Restaurant", new int[] {130,8,133,5},
+						"Restaurant", new int[] {134,8,137,5},
 						new Predicate("sells", new Term[] {
 							Operator.newOperator('+',
 								new Variable(Type.INTEGER, "S"),
@@ -591,7 +682,7 @@ public class Restaurant extends ASTRAClass {
 							)
 						})
 					),
-					new Send("Restaurant", new int[] {131,8,131,48},
+					new Send("Restaurant", new int[] {135,8,135,48},
 						new Performative("inform"),
 						new Variable(Type.STRING, "sender"),
 						new Predicate("preparing", new Term[] {
@@ -599,7 +690,7 @@ public class Restaurant extends ASTRAClass {
 						})
 					),
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {132,8,133,5},
+						"Restaurant", new int[] {136,8,137,5},
 						new Predicate("needToDeliver", new Term[] {
 							new Variable(Type.STRING, "OrderId"),
 							new Variable(Type.STRING, "sender"),
@@ -611,7 +702,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {137,9,137,82},
+			"Restaurant", new int[] {141,9,141,82},
 			new BeliefEvent('+',
 				new Predicate("needToDeliver", new Term[] {
 					new Variable(Type.STRING, "OrderId",false),
@@ -622,10 +713,42 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {137,81,140,9},
+				"Restaurant", new int[] {141,81,144,9},
 				new Statement[] {
+					new ModuleCall("system",
+						"Restaurant", new int[] {142,12,142,45},
+						new Predicate("sleep", new Term[] {
+							Operator.newOperator('%',
+								new ModuleTerm("math", Type.INTEGER,
+									new Predicate("randomInt", new Term[] {}),
+									new ModuleTermAdaptor() {
+										public Object invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.Math) intention.getModule("Restaurant","math")).randomInt(
+											);
+										}
+										public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+											return ((astra.lang.Math) visitor.agent().getModule("Restaurant","math")).randomInt(
+											);
+										}
+									}
+								),
+								Primitive.newPrimitive(100)
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
+									(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					),
 					new Subgoal(
-						"Restaurant", new int[] {139,12,140,9},
+						"Restaurant", new int[] {143,12,144,9},
 						new Goal(
 							new Predicate("callForDeliveryMen", new Term[] {
 								new Variable(Type.STRING, "OrderId")
@@ -636,7 +759,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {142,9,142,47},
+			"Restaurant", new int[] {146,9,146,47},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("callForDeliveryMen", new Term[] {
@@ -646,23 +769,23 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {142,46,161,9},
+				"Restaurant", new int[] {146,46,166,9},
 				new Statement[] {
 					new While(
-						"Restaurant", new int[] {143,12,161,9},
+						"Restaurant", new int[] {148,12,166,9},
 						new Predicate("proposal", new Term[] {
 							new Variable(Type.STRING, "OrderId"),
-							new Variable(Type.STRING, "sender",false),
+							new Variable(Type.STRING, "Sender",false),
 							new Variable(Type.INTEGER, "Distance",false)
 						}),
 						new Block(
-							"Restaurant", new int[] {143,66,145,13},
+							"Restaurant", new int[] {148,66,150,13},
 							new Statement[] {
 								new BeliefUpdate('-',
-									"Restaurant", new int[] {144,16,145,13},
+									"Restaurant", new int[] {149,16,150,13},
 									new Predicate("proposal", new Term[] {
 										new Variable(Type.STRING, "OrderId"),
-										new Variable(Type.STRING, "sender"),
+										new Variable(Type.STRING, "Sender"),
 										new Variable(Type.INTEGER, "Distance")
 									})
 								)
@@ -670,16 +793,16 @@ public class Restaurant extends ASTRAClass {
 						)
 					),
 					new While(
-						"Restaurant", new int[] {146,12,161,9},
+						"Restaurant", new int[] {151,12,166,9},
 						new Predicate("refusal", new Term[] {
 							new Variable(Type.STRING, "OrderId"),
 							new Variable(Type.STRING, "sender2",false)
 						}),
 						new Block(
-							"Restaurant", new int[] {146,52,148,13},
+							"Restaurant", new int[] {151,52,153,13},
 							new Statement[] {
 								new BeliefUpdate('-',
-									"Restaurant", new int[] {147,16,148,13},
+									"Restaurant", new int[] {152,16,153,13},
 									new Predicate("refusal", new Term[] {
 										new Variable(Type.STRING, "OrderId"),
 										new Variable(Type.STRING, "sender2")
@@ -688,11 +811,13 @@ public class Restaurant extends ASTRAClass {
 							}
 						)
 					),
-					new ModuleCall("df",
-						"Restaurant", new int[] {150,12,150,45},
-						new Predicate("search", new Term[] {
-							Primitive.newPrimitive("deliveryman"),
-							new Variable(Type.LIST, "LD",false)
+					new ModuleCall("console",
+						"Restaurant", new int[] {155,12,155,65},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("Searching deliverymen for "),
+								new Variable(Type.STRING, "OrderId")
+							)
 						}),
 						new DefaultModuleCallAdaptor() {
 							public boolean inline() {
@@ -700,24 +825,20 @@ public class Restaurant extends ASTRAClass {
 							}
 
 							public boolean invoke(Intention intention, Predicate predicate) {
-								return ((Df) intention.getModule("Restaurant","df")).search(
-									(java.lang.String) intention.evaluate(predicate.getTerm(0)),
-									(ActionParam<astra.term.ListTerm>) intention.evaluate(predicate.getTerm(1))
+								return ((astra.lang.Console) intention.getModule("Restaurant","console")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
 								);
 							}
 						}
 					),
-					new BeliefUpdate('+',
-						"Restaurant", new int[] {151,12,161,9},
-						new Predicate("delivery_man_count", new Term[] {
-							new Variable(Type.STRING, "OrderId"),
-							new Count(
-								new Variable(Type.LIST, "LD")
-							)
+					new Query(
+						"Restaurant", new int[] {157,12,157,44},
+						new Predicate("deliveryman_list", new Term[] {
+							new Variable(Type.LIST, "LD",false)
 						})
 					),
 					new If(
-						"Restaurant", new int[] {153,12,161,9},
+						"Restaurant", new int[] {158,12,166,9},
 						new Comparison("==",
 							new Variable(Type.LIST, "LD"),
 							new ListTerm(new Term[] {
@@ -725,30 +846,42 @@ public class Restaurant extends ASTRAClass {
 							})
 						),
 						new Block(
-							"Restaurant", new int[] {153,25,157,13},
+							"Restaurant", new int[] {158,25,162,13},
 							new Statement[] {
-								new ModuleCall("console",
-									"Restaurant", new int[] {154,16,154,68},
-									new Predicate("println", new Term[] {
-										Operator.newOperator('+',
-											Primitive.newPrimitive("No deliveryman found for "),
-											new Variable(Type.STRING, "OrderId")
+								new ModuleCall("system",
+									"Restaurant", new int[] {160,16,160,49},
+									new Predicate("sleep", new Term[] {
+										Operator.newOperator('%',
+											new ModuleTerm("math", Type.INTEGER,
+												new Predicate("randomInt", new Term[] {}),
+												new ModuleTermAdaptor() {
+													public Object invoke(Intention intention, Predicate predicate) {
+														return ((astra.lang.Math) intention.getModule("Restaurant","math")).randomInt(
+														);
+													}
+													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+														return ((astra.lang.Math) visitor.agent().getModule("Restaurant","math")).randomInt(
+														);
+													}
+												}
+											),
+											Primitive.newPrimitive(100)
 										)
 									}),
 									new DefaultModuleCallAdaptor() {
 										public boolean inline() {
-											return true;
+											return false;
 										}
 
 										public boolean invoke(Intention intention, Predicate predicate) {
-											return ((astra.lang.Console) intention.getModule("Restaurant","console")).println(
-												(java.lang.String) intention.evaluate(predicate.getTerm(0))
+											return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
 											);
 										}
 									}
 								),
 								new ModuleCall("system",
-									"Restaurant", new int[] {156,16,156,29},
+									"Restaurant", new int[] {161,16,161,29},
 									new Predicate("exit", new Term[] {}),
 									new DefaultModuleCallAdaptor() {
 										public boolean inline() {
@@ -764,16 +897,16 @@ public class Restaurant extends ASTRAClass {
 							}
 						),
 						new Block(
-							"Restaurant", new int[] {157,18,161,9},
+							"Restaurant", new int[] {162,18,166,9},
 							new Statement[] {
 								new Query(
-									"Restaurant", new int[] {158,12,158,41},
+									"Restaurant", new int[] {163,12,163,41},
 									new Predicate("location", new Term[] {
 										new Variable(Type.INTEGER, "X",false),
 										new Variable(Type.INTEGER, "Y",false)
 									})
 								),
-								new Send("Restaurant", new int[] {159,12,159,49},
+								new Send("Restaurant", new int[] {164,12,164,49},
 									new Performative("cfp"),
 									new Variable(Type.LIST, "LD"),
 									new Predicate("sendCFP", new Term[] {
@@ -789,7 +922,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {163,9,163,94},
+			"Restaurant", new int[] {168,9,168,94},
 			new MessageEvent(
 				new Performative("propose"),
 				new Variable(Type.STRING, "sender",false),
@@ -800,10 +933,10 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {163,93,167,5},
+				"Restaurant", new int[] {168,93,172,5},
 				new Statement[] {
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {164,8,167,5},
+						"Restaurant", new int[] {169,8,172,5},
 						new Predicate("proposal", new Term[] {
 							new Variable(Type.STRING, "OrderId"),
 							new Variable(Type.STRING, "sender"),
@@ -811,7 +944,7 @@ public class Restaurant extends ASTRAClass {
 						})
 					),
 					new Subgoal(
-						"Restaurant", new int[] {166,8,167,5},
+						"Restaurant", new int[] {171,8,172,5},
 						new Goal(
 							new Predicate("call_done", new Term[] {
 								new Variable(Type.STRING, "OrderId")
@@ -822,7 +955,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {169,9,169,78},
+			"Restaurant", new int[] {174,9,174,78},
 			new MessageEvent(
 				new Performative("refuse"),
 				new Variable(Type.STRING, "sender",false),
@@ -832,17 +965,17 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {169,77,173,5},
+				"Restaurant", new int[] {174,77,178,5},
 				new Statement[] {
 					new BeliefUpdate('+',
-						"Restaurant", new int[] {170,8,173,5},
+						"Restaurant", new int[] {175,8,178,5},
 						new Predicate("refusal", new Term[] {
 							new Variable(Type.STRING, "OrderId"),
 							new Variable(Type.STRING, "sender")
 						})
 					),
 					new Subgoal(
-						"Restaurant", new int[] {172,8,173,5},
+						"Restaurant", new int[] {177,8,178,5},
 						new Goal(
 							new Predicate("call_done", new Term[] {
 								new Variable(Type.STRING, "OrderId")
@@ -853,7 +986,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {175,9,176,151},
+			"Restaurant", new int[] {180,9,181,142},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("call_done", new Term[] {
@@ -862,7 +995,6 @@ public class Restaurant extends ASTRAClass {
 				)
 			),
 			new Predicate("delivery_man_count", new Term[] {
-				new Variable(Type.STRING, "OrderId"),
 				Operator.newOperator('+',
 					new ModuleTerm("check", Type.INTEGER,
 						new Predicate("count", new Term[] {
@@ -908,10 +1040,10 @@ public class Restaurant extends ASTRAClass {
 				)
 			}),
 			new Block(
-				"Restaurant", new int[] {176,150,185,5},
+				"Restaurant", new int[] {181,141,190,5},
 				new Statement[] {
 					new If(
-						"Restaurant", new int[] {177,8,185,5},
+						"Restaurant", new int[] {182,8,190,5},
 						new Comparison("<",
 							new ModuleTerm("check", Type.INTEGER,
 								new Predicate("count", new Term[] {
@@ -937,10 +1069,27 @@ public class Restaurant extends ASTRAClass {
 							Primitive.newPrimitive(1)
 						),
 						new Block(
-							"Restaurant", new int[] {177,64,181,9},
+							"Restaurant", new int[] {182,64,186,9},
 							new Statement[] {
+								new ModuleCall("system",
+									"Restaurant", new int[] {183,12,183,28},
+									new Predicate("sleep", new Term[] {
+										Primitive.newPrimitive(100)
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return false;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								),
 								new Subgoal(
-									"Restaurant", new int[] {180,12,181,9},
+									"Restaurant", new int[] {185,12,186,9},
 									new Goal(
 										new Predicate("callForDeliveryMen", new Term[] {
 											new Variable(Type.STRING, "OrderId")
@@ -950,10 +1099,10 @@ public class Restaurant extends ASTRAClass {
 							}
 						),
 						new Block(
-							"Restaurant", new int[] {181,14,185,5},
+							"Restaurant", new int[] {186,14,190,5},
 							new Statement[] {
 								new Subgoal(
-									"Restaurant", new int[] {183,12,184,9},
+									"Restaurant", new int[] {188,12,189,9},
 									new Goal(
 										new Predicate("chooseDeliveryMan", new Term[] {
 											new Variable(Type.STRING, "OrderId")
@@ -967,7 +1116,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {187,9,187,38},
+			"Restaurant", new int[] {192,9,192,38},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("call_done", new Term[] {
@@ -977,13 +1126,13 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {187,37,187,39},
+				"Restaurant", new int[] {192,37,192,39},
 				new Statement[] {
 				}
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {190,9,190,46},
+			"Restaurant", new int[] {195,9,195,46},
 			new GoalEvent('+',
 				new Goal(
 					new Predicate("chooseDeliveryMan", new Term[] {
@@ -993,47 +1142,47 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {190,45,207,5},
+				"Restaurant", new int[] {195,45,213,5},
 				new Statement[] {
 					new Declaration(
 						new Variable(Type.STRING, "chosen_deliveryman"),
-						"Restaurant", new int[] {191,8,207,5},
+						"Restaurant", new int[] {196,8,213,5},
 						Primitive.newPrimitive("")
 					),
 					new Declaration(
 						new Variable(Type.INTEGER, "distance"),
-						"Restaurant", new int[] {192,8,207,5},
+						"Restaurant", new int[] {197,8,213,5},
 						Primitive.newPrimitive(9999)
 					),
 					new ForEach(
-						"Restaurant", new int[] {193,8,207,5},
+						"Restaurant", new int[] {199,8,213,5},
 						new Predicate("proposal", new Term[] {
 							new Variable(Type.STRING, "OrderId"),
 							new Variable(Type.STRING, "sender",false),
 							new Variable(Type.INTEGER, "D",false)
 						}),
 						new Block(
-							"Restaurant", new int[] {193,56,203,9},
+							"Restaurant", new int[] {199,56,209,9},
 							new Statement[] {
 								new If(
-									"Restaurant", new int[] {194,12,203,9},
+									"Restaurant", new int[] {200,12,209,9},
 									new Comparison("<",
 										new Variable(Type.INTEGER, "D"),
 										new Variable(Type.INTEGER, "distance")
 									),
 									new Block(
-										"Restaurant", new int[] {194,30,200,13},
+										"Restaurant", new int[] {200,30,206,13},
 										new Statement[] {
 											new If(
-												"Restaurant", new int[] {195,16,200,13},
+												"Restaurant", new int[] {201,16,206,13},
 												new Comparison("~=",
 													new Variable(Type.STRING, "chosen_deliveryman"),
 													Primitive.newPrimitive("")
 												),
 												new Block(
-													"Restaurant", new int[] {195,45,197,21},
+													"Restaurant", new int[] {201,45,203,21},
 													new Statement[] {
-														new Send("Restaurant", new int[] {196,20,196,95},
+														new Send("Restaurant", new int[] {202,20,202,95},
 															new Performative("reject-proposal"),
 															new Variable(Type.STRING, "chosen_deliveryman"),
 															new Predicate("offer_deniedDelivery", new Term[] {
@@ -1046,20 +1195,20 @@ public class Restaurant extends ASTRAClass {
 											),
 											new Assignment(
 												new Variable(Type.STRING, "chosen_deliveryman"),
-												"Restaurant", new int[] {198,16,200,13},
+												"Restaurant", new int[] {204,16,206,13},
 												new Variable(Type.STRING, "sender")
 											),
 											new Assignment(
 												new Variable(Type.INTEGER, "distance"),
-												"Restaurant", new int[] {199,16,200,13},
+												"Restaurant", new int[] {205,16,206,13},
 												new Variable(Type.INTEGER, "D")
 											)
 										}
 									),
 									new Block(
-										"Restaurant", new int[] {200,19,203,9},
+										"Restaurant", new int[] {206,19,209,9},
 										new Statement[] {
-											new Send("Restaurant", new int[] {201,16,201,79},
+											new Send("Restaurant", new int[] {207,16,207,79},
 												new Performative("reject-proposal"),
 												new Variable(Type.STRING, "sender"),
 												new Predicate("offer_deniedDelivery", new Term[] {
@@ -1073,7 +1222,39 @@ public class Restaurant extends ASTRAClass {
 							}
 						)
 					),
-					new Send("Restaurant", new int[] {205,8,205,92},
+					new ModuleCall("system",
+						"Restaurant", new int[] {211,8,211,41},
+						new Predicate("sleep", new Term[] {
+							Operator.newOperator('%',
+								new ModuleTerm("math", Type.INTEGER,
+									new Predicate("randomInt", new Term[] {}),
+									new ModuleTermAdaptor() {
+										public Object invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.Math) intention.getModule("Restaurant","math")).randomInt(
+											);
+										}
+										public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+											return ((astra.lang.Math) visitor.agent().getModule("Restaurant","math")).randomInt(
+											);
+										}
+									}
+								),
+								Primitive.newPrimitive(100)
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return false;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.System) intention.getModule("Restaurant","system")).sleep(
+									(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
+					),
+					new Send("Restaurant", new int[] {212,8,212,92},
 						new Performative("accept-proposal"),
 						new Variable(Type.STRING, "chosen_deliveryman"),
 						new Predicate("offer_acceptedDelivery", new Term[] {
@@ -1085,7 +1266,7 @@ public class Restaurant extends ASTRAClass {
 			)
 		));
 		addRule(new Rule(
-			"Restaurant", new int[] {209,9,209,79},
+			"Restaurant", new int[] {215,9,215,79},
 			new MessageEvent(
 				new Performative("failure"),
 				new Variable(Type.STRING, "sender",false),
@@ -1095,10 +1276,10 @@ public class Restaurant extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"Restaurant", new int[] {209,78,211,5},
+				"Restaurant", new int[] {215,78,217,5},
 				new Statement[] {
 					new Subgoal(
-						"Restaurant", new int[] {210,8,211,5},
+						"Restaurant", new int[] {216,8,217,5},
 						new Goal(
 							new Predicate("callForDeliveryMen", new Term[] {
 								new Variable(Type.STRING, "OrderId")
@@ -1236,6 +1417,7 @@ public class Restaurant extends ASTRAClass {
 		fragment.addModule("math",astra.lang.Math.class,agent);
 		fragment.addModule("df",Df.class,agent);
 		fragment.addModule("check",Check.class,agent);
+		fragment.addModule("debug",astra.lang.Debug.class,agent);
 		return fragment;
 	}
 

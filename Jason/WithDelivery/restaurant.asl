@@ -45,7 +45,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	<- +myFoodType(F, Min, Max);												//add belief of the type of restaurant
 	   //.print("I am a restaurant and I serve ", F,".");							//
 	   .abolish(food(_,_,_,_));													//clear memory
-	   .wait(R*2000);
+	   .wait(R*1000);
 	   .df_register(F);
 	   -typeOfFood(_);															//clear memory
 	   !getFoodPrice.															//add goal to get the food price

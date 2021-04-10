@@ -13,7 +13,6 @@ agent Controller {
 	types controllerTypes {
 		formula nClients(int);
 		formula nRestaurants(int);
-		formula nDeliveryMen(int);
 		formula placedAll(string);
 		formula nClientsPlaced(string);
 		}
@@ -22,7 +21,6 @@ agent Controller {
 	/* Initial beliefs */
 	initial nClients(200); 																	
 	initial nRestaurants(50); 																
-    initial nDeliveryMen(1);
 	initial nClientsPlaced(0);																
 	
 	/* Initial goals */
@@ -43,16 +41,10 @@ agent Controller {
 	//creating deliverymen agents
 
 	rule +!createAgents() :
-		nDeliveryMen(int D) &
 		nRestaurants(int R) &
 		nClients(int C) {
 			console.println(system.name());
 			int X = 1;
-			while (X <= D){
-				system.createAgent("delivery_man_"+X, "DeliveryMan");
-		    	console.println("Created delivery_man_"+X+" Agent");
-		    	X = X + 1;
-			}
 			X = 1;
 			while (X <= R){
 				system.createAgent("restaurant_"+X, "Restaurant");
@@ -80,6 +72,7 @@ agent Controller {
 		console.println(NCP);
 		if (NC == NCP){
 			console.println("---------------------- CNP 1 ------------------------");
+			system.exit();
 		} else {
 			system.sleep(1);
 			!checkAllClientsPlaced();

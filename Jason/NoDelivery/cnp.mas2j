@@ -3,6 +3,6 @@ MAS cnp {
 
 	agents:
 		controller;
-		restaurant #50;
-		client #200;
+		restaurant #1;
+		client #50;
 }

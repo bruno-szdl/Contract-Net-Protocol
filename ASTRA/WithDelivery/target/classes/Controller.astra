@@ -26,7 +26,7 @@ agent Controller {
 	/* Initial beliefs */
 	initial nClients(50); 																	
 	initial nRestaurants(50); 																
-    initial nDeliveryMen(10);
+    initial nDeliveryMen(25);
 	initial nClientsPlaced(0);																
 	initial nClientsFinished(0);																
 	
@@ -58,6 +58,7 @@ agent Controller {
 		    	console.println("Created delivery_man_"+X+" Agent");
 		    	X = X + 1;
 			}
+			system.sleep(100);
 			X = 1;
 			while (X <= R){
 				system.createAgent("restaurant_"+X, "Restaurant");
@@ -82,7 +83,7 @@ agent Controller {
 		: nClients(int NC){
 		int NCP = check.count(nClientsPlaced(string S));
 		//debug.dumpBeliefs();
-		console.println("NCP " + NCP);
+		console.println("nCP " + NCP);
 		if (NC == NCP){
 			console.println("---------------------- CNP 1 ------------------------");
 			!checkAllClientsFinished();
@@ -101,7 +102,7 @@ agent Controller {
 		: nClients(int NC){
 		int NCF = check.count(nClientsFinished(string S));
 		//debug.dumpBeliefs();
-		console.println("NCF " + NCF);
+		console.println("nCF " + NCF);
 		if (NC == NCF){
 			console.println("---------------------- CNP 2 ------------------------");
 			system.exit();

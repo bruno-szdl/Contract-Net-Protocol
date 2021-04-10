@@ -39,7 +39,7 @@ agent Client {
 		}
 
 	/* Initial beliefs */
-	initial nOrders(10); 
+	initial nOrders(1); 
 	initial typesOfFood(10);
 	initial placed(0);
 	initial notFound(0);
@@ -85,7 +85,7 @@ agent Client {
 		}
 		!getLocation();
 		!getStrategy();
-		system.sleep(100);
+		//system.sleep(100);
 		!placeOrders();
 	}
 	rule +!getLocation(){
@@ -106,13 +106,13 @@ agent Client {
 			while(wantToOrder(string OrderId, string F)){
 				-wantToOrder(OrderId, F);
 				//console.println("Starting cnp for "+OrderId);
-				system.sleep(math.randomInt()%10);
+				system.sleep(math.randomInt()%100);
 				!!cnp(OrderId, F, X, Y);
 			}
 		}
 
 	rule +!cnp(string OrderId, string F, int X, int Y) {
-			//system.sleep(math.randomInt()%100);
+			system.sleep(math.randomInt()%100);
 			//system.sleep(math.randomInt()%1);
 			!callForRestaurants(OrderId, F, X, Y);
 		}
@@ -124,7 +124,7 @@ agent Client {
 			//console.println(LR);
 			if (LR == ["register"]){
 				//console.println("No resturant found for "+OrderId);
-				//system.sleep(math.randomInt()%100);
+				system.sleep(math.randomInt()%100);
 				+notFound(OrderId);
 			} else{
 			send(cfp, LR, sendCFP(OrderId, X, Y));
@@ -152,7 +152,7 @@ agent Client {
 
 
 	rule +!chooseRestaurant(string OrderId) {
-		//system.sleep(math.randomInt()%100);
+		system.sleep(math.randomInt()%100);
 		string chosen_restaurant = "";
 		query(strategy(int St));
 		query(location(int X, int Y));
@@ -169,7 +169,7 @@ agent Client {
 					send(reject-proposal, sender, offer_denied(OrderId, Total));
 				}
 			}
-		//system.sleep(math.randomInt()%100);
+		system.sleep(math.randomInt()%100);
 		send(accept-proposal, chosen_restaurant, offer_accepted(OrderId, price, X, Y));
 		}else{
 			int rate = -1;
@@ -190,7 +190,7 @@ agent Client {
 		send(accept-proposal, chosen_restaurant, offer_accepted(OrderId, price, X, Y));
 		}
 		console.println("Placed order for "+OrderId);
-		//system.sleep(math.randomInt()%100);
+		system.sleep(math.randomInt()%100);
 		+placed(OrderId);
 	}
 
@@ -199,10 +199,11 @@ agent Client {
 		int N = check.count(placed(string S1)) + check.count(notFound(string S2));
 		if (N == NO){
 			console.println("Placed all my orders!!!");
+			system.sleep(math.randomInt()%100);
 			send(inform, "main", placedAll("ok"));
 			!checkOrdersFinished();
 		} else{
-			//system.sleep(1);
+			system.sleep(1);
 			!checkOrdersPlaced();
 		}
 	}
@@ -213,12 +214,13 @@ agent Client {
 	
 	rule +!checkOrdersFinished()
 		: nOrders(int NO){
-		int N = check.count(finished(string S1));
+		int N = check.count(finished(string S1)) + check.count(notFound(string S2));
 		if (N == NO){
+			system.sleep(math.randomInt()%100);
 			console.println("Finished all my orders!!!");
 			send(inform, "main", finishedAll("ok"));
 		} else{
-			//system.sleep(1);
+			system.sleep(1);
 			!checkOrdersFinished();
 		}
 	}

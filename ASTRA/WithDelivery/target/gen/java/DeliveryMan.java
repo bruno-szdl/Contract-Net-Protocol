@@ -123,6 +123,35 @@ public class DeliveryMan extends ASTRAClass {
 							new Variable(Type.INTEGER, "X"),
 							new Variable(Type.INTEGER, "Y")
 						})
+					),
+					new ModuleCall("console",
+						"DeliveryMan", new int[] {44,8,44,64},
+						new Predicate("println", new Term[] {
+							Operator.newOperator('+',
+								Primitive.newPrimitive("I am located in ("),
+								Operator.newOperator('+',
+									new Variable(Type.INTEGER, "X"),
+									Operator.newOperator('+',
+										Primitive.newPrimitive(", "),
+										Operator.newOperator('+',
+											new Variable(Type.INTEGER, "Y"),
+											Primitive.newPrimitive(").")
+										)
+									)
+								)
+							)
+						}),
+						new DefaultModuleCallAdaptor() {
+							public boolean inline() {
+								return true;
+							}
+
+							public boolean invoke(Intention intention, Predicate predicate) {
+								return ((astra.lang.Console) intention.getModule("DeliveryMan","console")).println(
+									(java.lang.String) intention.evaluate(predicate.getTerm(0))
+								);
+							}
+						}
 					)
 				}
 			)
@@ -143,28 +172,53 @@ public class DeliveryMan extends ASTRAClass {
 				"DeliveryMan", new int[] {47,77,60,9},
 				new Statement[] {
 					new Query(
-						"DeliveryMan", new int[] {49,8,49,39},
-						new Predicate("location", new Term[] {
-							new Variable(Type.INTEGER, "XD",false),
-							new Variable(Type.INTEGER, "YD",false)
-						})
-					),
-					new Query(
-						"DeliveryMan", new int[] {50,8,50,33},
+						"DeliveryMan", new int[] {49,8,49,33},
 						new Predicate("working", new Term[] {
 							new Variable(Type.BOOLEAN, "w",false)
 						})
 					),
 					new If(
-						"DeliveryMan", new int[] {51,8,60,9},
+						"DeliveryMan", new int[] {50,8,60,9},
 						new Comparison("==",
 							new Variable(Type.BOOLEAN, "w"),
 							Primitive.newPrimitive(true)
 						),
 						new Block(
-							"DeliveryMan", new int[] {51,22,55,9},
+							"DeliveryMan", new int[] {50,22,54,9},
 							new Statement[] {
-								new Send("DeliveryMan", new int[] {53,12,53,61},
+								new ModuleCall("system",
+									"DeliveryMan", new int[] {51,12,51,44},
+									new Predicate("sleep", new Term[] {
+										Operator.newOperator('%',
+											new ModuleTerm("math", Type.INTEGER,
+												new Predicate("randomInt", new Term[] {}),
+												new ModuleTermAdaptor() {
+													public Object invoke(Intention intention, Predicate predicate) {
+														return ((astra.lang.Math) intention.getModule("DeliveryMan","math")).randomInt(
+														);
+													}
+													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+														return ((astra.lang.Math) visitor.agent().getModule("DeliveryMan","math")).randomInt(
+														);
+													}
+												}
+											),
+											Primitive.newPrimitive(10)
+										)
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return false;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.System) intention.getModule("DeliveryMan","system")).sleep(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								),
+								new Send("DeliveryMan", new int[] {52,12,52,61},
 									new Performative("refuse"),
 									new Variable(Type.STRING, "sender"),
 									new Predicate("sendRefuseDelivery", new Term[] {
@@ -174,8 +228,15 @@ public class DeliveryMan extends ASTRAClass {
 							}
 						),
 						new Block(
-							"DeliveryMan", new int[] {55,14,60,9},
+							"DeliveryMan", new int[] {54,14,60,9},
 							new Statement[] {
+								new Query(
+									"DeliveryMan", new int[] {55,12,55,43},
+									new Predicate("location", new Term[] {
+										new Variable(Type.INTEGER, "XD",false),
+										new Variable(Type.INTEGER, "YD",false)
+									})
+								),
 								new Declaration(
 									new Variable(Type.INTEGER, "distance"),
 									"DeliveryMan", new int[] {56,12,59,75},
@@ -221,6 +282,38 @@ public class DeliveryMan extends ASTRAClass {
 											}
 										)
 									)
+								),
+								new ModuleCall("system",
+									"DeliveryMan", new int[] {58,12,58,44},
+									new Predicate("sleep", new Term[] {
+										Operator.newOperator('%',
+											new ModuleTerm("math", Type.INTEGER,
+												new Predicate("randomInt", new Term[] {}),
+												new ModuleTermAdaptor() {
+													public Object invoke(Intention intention, Predicate predicate) {
+														return ((astra.lang.Math) intention.getModule("DeliveryMan","math")).randomInt(
+														);
+													}
+													public Object invoke(BindingsEvaluateVisitor visitor, Predicate predicate) {
+														return ((astra.lang.Math) visitor.agent().getModule("DeliveryMan","math")).randomInt(
+														);
+													}
+												}
+											),
+											Primitive.newPrimitive(10)
+										)
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return false;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.System) intention.getModule("DeliveryMan","system")).sleep(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
 								),
 								new Send("DeliveryMan", new int[] {59,12,59,73},
 									new Performative("propose"),
@@ -272,24 +365,24 @@ public class DeliveryMan extends ASTRAClass {
 			),
 			Predicate.TRUE,
 			new Block(
-				"DeliveryMan", new int[] {66,104,85,5},
+				"DeliveryMan", new int[] {66,104,88,5},
 				new Statement[] {
 					new Query(
-						"DeliveryMan", new int[] {67,8,67,33},
+						"DeliveryMan", new int[] {68,8,68,33},
 						new Predicate("working", new Term[] {
 							new Variable(Type.BOOLEAN, "w",false)
 						})
 					),
 					new If(
-						"DeliveryMan", new int[] {68,8,85,5},
+						"DeliveryMan", new int[] {69,8,88,5},
 						new Comparison("==",
 							new Variable(Type.BOOLEAN, "w"),
 							Primitive.newPrimitive(true)
 						),
 						new Block(
-							"DeliveryMan", new int[] {68,22,70,9},
+							"DeliveryMan", new int[] {69,22,72,9},
 							new Statement[] {
-								new Send("DeliveryMan", new int[] {69,12,69,63},
+								new Send("DeliveryMan", new int[] {71,12,71,63},
 									new Performative("failure"),
 									new Variable(Type.STRING, "sender"),
 									new Predicate("sendFailureDelivery", new Term[] {
@@ -299,22 +392,39 @@ public class DeliveryMan extends ASTRAClass {
 							}
 						),
 						new Block(
-							"DeliveryMan", new int[] {70,14,85,5},
+							"DeliveryMan", new int[] {72,14,88,5},
 							new Statement[] {
 								new SpecialBeliefUpdate(
-									"DeliveryMan", new int[] {71,12,84,9},
+									"DeliveryMan", new int[] {73,12,87,9},
 									new Predicate("working", new Term[] {
 										Primitive.newPrimitive(true)
 									})
 								),
+								new ModuleCall("system",
+									"DeliveryMan", new int[] {74,12,74,34},
+									new Predicate("sleep", new Term[] {
+										new Variable(Type.INTEGER, "distance")
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return false;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.System) intention.getModule("DeliveryMan","system")).sleep(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								),
 								new Query(
-									"DeliveryMan", new int[] {72,12,72,36},
+									"DeliveryMan", new int[] {75,12,75,36},
 									new Predicate("deliveries", new Term[] {
 										new Variable(Type.INTEGER, "S",false)
 									})
 								),
 								new SpecialBeliefUpdate(
-									"DeliveryMan", new int[] {73,12,84,9},
+									"DeliveryMan", new int[] {76,12,87,9},
 									new Predicate("deliveries", new Term[] {
 										Operator.newOperator('+',
 											new Variable(Type.INTEGER, "S"),
@@ -322,7 +432,27 @@ public class DeliveryMan extends ASTRAClass {
 										)
 									})
 								),
-								new Send("DeliveryMan", new int[] {74,12,74,53},
+								new ModuleCall("console",
+									"DeliveryMan", new int[] {77,12,77,31},
+									new Predicate("println", new Term[] {
+										Operator.newOperator('+',
+											new Variable(Type.INTEGER, "S"),
+											Primitive.newPrimitive(1)
+										)
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return true;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.Console) intention.getModule("DeliveryMan","console")).println(
+												(java.lang.Integer) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								),
+								new Send("DeliveryMan", new int[] {78,12,78,53},
 									new Performative("inform"),
 									new Variable(Type.STRING, "sender"),
 									new Predicate("delivering", new Term[] {
@@ -331,7 +461,7 @@ public class DeliveryMan extends ASTRAClass {
 								),
 								new Declaration(
 									new Variable(Type.LIST, "clientNameList"),
-									"DeliveryMan", new int[] {77,12,84,9},
+									"DeliveryMan", new int[] {81,12,87,9},
 									new ModuleTerm("strings", Type.LIST,
 										new Predicate("split", new Term[] {
 											new Variable(Type.STRING, "OrderId"),
@@ -355,7 +485,7 @@ public class DeliveryMan extends ASTRAClass {
 								),
 								new Declaration(
 									new Variable(Type.STRING, "clientName"),
-									"DeliveryMan", new int[] {78,12,84,9},
+									"DeliveryMan", new int[] {82,12,87,9},
 									new ModuleTerm("prelude", Type.STRING,
 										new Predicate("headAsString", new Term[] {
 											new Variable(Type.LIST, "clientNameList")
@@ -374,18 +504,52 @@ public class DeliveryMan extends ASTRAClass {
 										}
 									)
 								),
-								new Send("DeliveryMan", new int[] {80,12,80,56},
+								new Send("DeliveryMan", new int[] {83,12,83,56},
 									new Performative("inform"),
 									new Variable(Type.STRING, "clientName"),
 									new Predicate("delivered", new Term[] {
 										new Variable(Type.STRING, "OrderId")
 									})
 								),
+								new ModuleCall("console",
+									"DeliveryMan", new int[] {84,12,84,75},
+									new Predicate("println", new Term[] {
+										Operator.newOperator('+',
+											Primitive.newPrimitive("Informimg client about the deliver "),
+											new Variable(Type.STRING, "OrderId")
+										)
+									}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return true;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.Console) intention.getModule("DeliveryMan","console")).println(
+												(java.lang.String) intention.evaluate(predicate.getTerm(0))
+											);
+										}
+									}
+								),
 								new SpecialBeliefUpdate(
-									"DeliveryMan", new int[] {82,12,84,9},
+									"DeliveryMan", new int[] {85,12,87,9},
 									new Predicate("working", new Term[] {
 										Primitive.newPrimitive(false)
 									})
+								),
+								new ModuleCall("debug",
+									"DeliveryMan", new int[] {86,12,86,31},
+									new Predicate("dumpBeliefs", new Term[] {}),
+									new DefaultModuleCallAdaptor() {
+										public boolean inline() {
+											return true;
+										}
+
+										public boolean invoke(Intention intention, Predicate predicate) {
+											return ((astra.lang.Debug) intention.getModule("DeliveryMan","debug")).dumpBeliefs(
+											);
+										}
+									}
 								)
 							}
 						)

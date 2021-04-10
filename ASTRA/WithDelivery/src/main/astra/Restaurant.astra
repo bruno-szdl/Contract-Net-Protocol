@@ -7,6 +7,7 @@ agent Restaurant {
 	module Math math;
 	module Df df;
 	module Check check;
+	module Debug debug;
 	
 	/* Types*/
 	types restaurantTypes {
@@ -32,7 +33,8 @@ agent Restaurant {
 		formula offer_acceptedDelivery(string, int);
 		formula tell(string);
 		formula needToDeliver(string, string, int, int);
-		formula delivery_man_count(string, int);
+		formula delivery_man_count(int);
+		formula deliveryman_list(list);
 		formula preparing(string);
 		formula proposal(string, string, int);
 		formula refusal(string, string);
@@ -80,10 +82,12 @@ agent Restaurant {
 	 	+serve(F);
 		-typesOfFood(T);
 		int X = 0;
-		while(X < T){
-			-food(X, string S, int I, int J);
-			X = X + 1;
-			}
+		while(food(int Y, string S, int I, int J)){
+			-food(Y, S, I, J);
+		}
+		df.search("deliveryman", list LD);
+		+deliveryman_list(LD);
+		+delivery_man_count(list_count(LD));
 		}
 	 			
 	rule +!getLocation(){
@@ -112,10 +116,10 @@ agent Restaurant {
 		if (distance < Rd){
 			int Total = distance/2 + P;
 			//console.println("Proposing to "+OrderId);
-			//system.sleep(math.randomInt()%10);
+			system.sleep(math.randomInt()%10);
 			send(propose, sender, sendPropose(OrderId, Total, S));
 		} else{
-			//system.sleep(math.randomInt()%10);
+			system.sleep(math.randomInt()%10);
 			send(refuse, sender, sendRefuse(OrderId));
 			}
 		}
@@ -135,24 +139,25 @@ agent Restaurant {
 //----------------------------------------------------------------------------------------
 
 	rule +needToDeliver(string OrderId, string client, int Xclient, int Yclient) {
-			//system.sleep(math.randomInt()%100);
+			system.sleep(math.randomInt()%100);
 			!callForDeliveryMen(OrderId);
 		}
 
 	rule +!callForDeliveryMen(string OrderId) {
-			while (proposal(OrderId, string sender, int Distance)){
-				-proposal(OrderId, sender, Distance);
+			//console.println("cfp");
+			while (proposal(OrderId, string Sender, int Distance)){
+				-proposal(OrderId, Sender, Distance);
 			}
 			while (refusal(OrderId, string sender2)){
 				-refusal(OrderId, sender2);
 			}
-			//console.println("Searching deliverymen for "+OrderId);
-			df.search("deliveryman", list LD);
-			+delivery_man_count(OrderId, list_count(LD));
+			//debug.dumpBeliefs();
+			console.println("Searching deliverymen for "+OrderId);
 			//console.println(LR);
+			query(deliveryman_list(list LD));
 			if (LD == []){
-				console.println("No deliveryman found for "+OrderId);
-				//system.sleep(math.randomInt()%100);
+				//console.println("No deliveryman found for "+OrderId);
+				system.sleep(math.randomInt()%100);
 				system.exit();
 			} else{
 			query(location(int X, int Y));
@@ -173,9 +178,9 @@ agent Restaurant {
 	}
 
 	rule +!call_done(string OrderId) 
-			:  delivery_man_count(OrderId, check.count(proposal(OrderId, string sender, int Distance))+check.count(refusal(OrderId, string sender2))) {
+			:  delivery_man_count(check.count(proposal(OrderId, string sender, int Distance))+check.count(refusal(OrderId, string sender2))) {
 		if (check.count(proposal(OrderId, sender, Distance)) < 1){
-			//system.sleep(10);
+			system.sleep(100);
 			//console.println("No available delivery man, searching again...");
 			!callForDeliveryMen(OrderId);
 		} else{
@@ -190,6 +195,7 @@ agent Restaurant {
 	rule +!chooseDeliveryMan(string OrderId) {
 		string chosen_deliveryman = "";
 		int distance = 9999;
+		//console.println("choosing");
 		foreach(proposal(OrderId, string sender, int D)){
 			if (D < distance) {
 				if (chosen_deliveryman ~= ""){
@@ -201,9 +207,9 @@ agent Restaurant {
 				send(reject-proposal, sender, offer_deniedDelivery(OrderId, D));
 			}
 		}
-		//system.sleep(math.randomInt()%100);
+		//console.println("sending deliveryman accept proposal");
+		system.sleep(math.randomInt()%100);
 		send(accept-proposal, chosen_deliveryman, offer_acceptedDelivery(OrderId, distance));
-		//system.sleep(math.randomInt()%100);
 	}
 
 	rule @message(failure, string sender, sendFailureDelivery(string OrderId)){

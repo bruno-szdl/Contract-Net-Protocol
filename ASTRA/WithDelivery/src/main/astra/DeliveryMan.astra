@@ -41,21 +41,21 @@ agent DeliveryMan {
 		int X = math.randomInt()%100;
 		int Y = math.randomInt()%100;
 		+location(X, Y);
-	    //console.println("I am located in ("+ X + ", "+ Y + ").");
+	    console.println("I am located in ("+ X + ", "+ Y + ").");
 		}
 
 	rule @message(cfp, string sender, sendCFP(string OrderId, int X, int Y)) {
 		//system.sleep(math.randomInt()%10);
-		query(location(int XD, int YD));
 		query(working(boolean w));
 		if (w == true){
-			//system.sleep(math.randomInt()%10);
+			system.sleep(math.randomInt()%10);
 			send(refuse, sender, sendRefuseDelivery(OrderId));
 			//console.println("Not available now to "+OrderId);
 		} else{
+			query(location(int XD, int YD));
 			int distance = math.abs(XD - X) + math.abs(YD -Y);
 			//console.println("Proposing to "+OrderId);
-			//system.sleep(math.randomInt()%10);
+			system.sleep(math.randomInt()%10);
 			send(propose, sender, sendProposeDelivery(OrderId, distance));}
 		}
 
@@ -64,23 +64,26 @@ agent DeliveryMan {
 	}
 
 	rule @message(accept-proposal, string sender, offer_acceptedDelivery(string OrderId, int distance)) {
+		//console.println("received accept-proposal " +OrderId);
 		query(working(boolean w));
 		if (w == true){
+			//console.println("failure " +OrderId);
 			send(failure, sender, sendFailureDelivery(OrderId));
 		} else{
 			-+working(true);
+			system.sleep(distance);
 			query(deliveries(int S));
 			-+deliveries(S+1);
+			console.println(S+1);
 			send(inform, sender, delivering(OrderId));
 			//console.println("delivering " +OrderId);
 			//system.sleep(1);
 			list clientNameList = strings.split(OrderId, ";");
 			string clientName = prelude.headAsString(clientNameList);
-			//console.println(clientName);
 			send(inform, clientName, delivered(OrderId));
-			//console.println("Informimg client about the deliver " +OrderId);
+			console.println("Informimg client about the deliver " +OrderId);
 			-+working(false);
-
+			debug.dumpBeliefs();
 		}
 	}
 }
