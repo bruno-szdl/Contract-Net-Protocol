@@ -2,8 +2,8 @@
 
 nDeliveryMen=50
 nRestaurants=50
-nClients=200
-nOrders=10
+nClients=20
+nOrders=5
 
 if [ $# -eq 4 ]; then
     nDeliveryMen=$1
@@ -15,4 +15,4 @@ fi
 echo "nOrders($nOrders).\nnClients($nClients)." > settings.asl
 echo "MAS cnp {\n\tinfrastructure: Centralised\n\n\tagents:\n\t\tcontroller #1;\n\t\tdeliveryman #$nDeliveryMen;\n\t\trestaurant #$nRestaurants;\n\t\tclient #$nClients;\n}" > cnp.mas2j
 
-jason cnp.mas2j
+gradle -q --console=plain
