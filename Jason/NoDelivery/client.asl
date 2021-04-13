@@ -29,7 +29,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 /* ----------------- Initial Goals ----------------- */
 !getLocation. 																	//get the client's house location
 !init. 																			//add the goal chooseFood for each order
-!getSet.
+!getSet.																		//get orders set
 !getStrategy. 																	//get the order strategy (price or stars)
 !checkPlacedOrders. 															//check if all orders were placed
 
@@ -40,7 +40,7 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   nOrders(O) &																//number of orders
 	   C < O 																	//if counter is less than number of orders
 	<- -+count(C+1);				     										//update counter
-	   .wait(1);  															//wait to place another order
+	   .wait(1);  														     	//wait to place another order
 	   !chooseFood(C+1) |&| !init.												//choose food for order and repeat
 
 //finished choosing foods to order
@@ -51,8 +51,8 @@ all_proposals_received(OrderId, NT) :-              							//number of participa
 	   .abolish(food(_,_)).														//clear memory
 	   
 +!getSet
-	<- .set.create(PlacedOrdersSet);
-	   +mySet(PlacedOrdersSet).
+	<- .set.create(PlacedOrdersSet);											//create set
+	   +mySet(PlacedOrdersSet).													//add belief for set
 
 //get the client's house location
 +!getLocation 

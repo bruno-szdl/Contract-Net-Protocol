@@ -1,8 +1,8 @@
 /*
-   Project test
+   Project cnp
 
    Gradle build file for Jason Application
-   Março 15, 2021 - 21:08:03
+   Abril 13, 2021 - 20:20:24
 */
 
 defaultTasks 'run'
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.jason',     name: 'jason' ,   version: '2.5.1'
+    compile group: 'org.jason',     name: 'jason' ,   version: '2.6.2'
 }
 
 sourceSets {
@@ -44,10 +44,10 @@ sourceSets {
 task run (type: JavaExec, dependsOn: 'classes') {
     description 'runs the application'
     main = 'jason.infra.centralised.RunCentralisedMAS'
-    args 'test.mas2j'
+    args 'cnp.mas2j'
 	// options:
-	//     args = ['test.mas2j', '--debug']
-	//     args = ['test.mas2j', '--log-conf', 'l.p'] // to use file l.p to configure logging
+	//     args = ['cnp.mas2j', '--debug']
+	//     args = ['cnp.mas2j', '--log-conf', 'l.p'] // to use file l.p to configure logging
     classpath sourceSets.main.runtimeClasspath
 }
 

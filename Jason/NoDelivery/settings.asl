@@ -1,2 +1,2 @@
-nOrders(1).
-nClients(50).
+nOrders(10).
+nClients(20).
